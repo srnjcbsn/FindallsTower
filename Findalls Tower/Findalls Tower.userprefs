@@ -1,14 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-<<<<<<< HEAD
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/TiltPlane.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Standard Assets\Prefabs\Player\PlayerMovement.cs">
     <Files>
-      <File FileName="Assets/TiltPlane.cs" Line="41" Column="24" />
-=======
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\TiltPlane.cs">
-    <Files>
-      <File FileName="Assets\TiltPlane.cs" Line="31" Column="51" />
->>>>>>> d7dcfa2d5e65c0cc3a3f8074e08b3397b87aca0f
+      <File FileName="Assets\Standard Assets\Prefabs\Player\PlayerMovement.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
