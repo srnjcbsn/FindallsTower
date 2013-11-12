@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Standard Assets\Prefabs\Player\PlayerMovement.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Standard Assets\Scripts\EnemyAI.cs">
     <Files>
-      <File FileName="Assets\Standard Assets\Prefabs\Player\PlayerMovement.cs" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\Scripts\EnemyAI.cs" Line="13" Column="1" />
+      <File FileName="Assets\Standard Assets\Scripts\Player\PlayerMovement.cs" Line="33" Column="13" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
