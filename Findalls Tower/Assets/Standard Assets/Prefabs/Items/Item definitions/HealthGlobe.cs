@@ -9,9 +9,11 @@ public class HealthGlobe : Item
     //2: affectsDefense
     //3: affectsAttack
     
-    public HealthGlobe(int level, int offset)
+    public HealthGlobe(int level, int offset, string descr)
     {
-        description = "Health Globe";
+        description = descr;
+
+        //Determine amount healed
         int r = Random.Range(level, level + offset);
         statsAffected[0] = r;
     }

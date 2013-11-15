@@ -15,7 +15,8 @@ public class ItemPickup : MonoBehaviour
         level = 1;
         offset = 2;
 
-        int r = Random.Range(0, sizeof(ItemType)-1);
+        //Determine the kind of item the object instance is representing
+        int r = Random.Range(0, sizeof(ItemType));
         r = 2; //TESTING
         switch (r)
         {
@@ -27,11 +28,11 @@ public class ItemPickup : MonoBehaviour
                 break;
             case 2:
                 this.type = ItemType.Buff;
-                item = new Buff(level, offset-1);
+                item = new Buff(level, offset-1, "Buff");
                 break;
             case 3:
                 this.type = ItemType.HealthGlobe;
-                item = new HealthGlobe(level, offset);
+                item = new HealthGlobe(level, offset, "Health Globe");
                 break;
             case 4:
                 this.type = ItemType.Weapon;

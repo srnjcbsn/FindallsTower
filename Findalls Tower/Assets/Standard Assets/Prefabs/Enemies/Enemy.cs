@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
         level = 1;
         offset = 1;
 
-        health = Random.Range(level, level + offset);
+        health = Random.Range(level, level + offset + 1);
         defense = 0;
         attack = 1;
 	}
@@ -29,11 +29,13 @@ public class Enemy : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        //When colliding with player damage eachother.
         Debug.Log("Enemy collision");
         if (col.gameObject.name == "Player")
         {
             Debug.Log("Enemy collides with player");
             int playerAttack = Player.FightEnemy(attack);
+            //Check to see if the enemy dies
             if (FightPlayer(playerAttack))
             {
                 Dead();

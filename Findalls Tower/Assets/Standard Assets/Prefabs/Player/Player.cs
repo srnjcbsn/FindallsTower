@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        maxHealth = 3;
+        maxHealth = 4;
         currentHealth = maxHealth;
         defense = 0;
         baseAttack = 1;
@@ -71,6 +71,7 @@ public class Player : MonoBehaviour {
 	    
 	}
 
+    //Handles the different items the player can pick up
     public static void ItemPickup(Item item)
     {
         //0: affectsCurrentHealth
@@ -81,6 +82,7 @@ public class Player : MonoBehaviour {
         Debug.Log("Item pickup");
         Debug.Log("Value healed: " + item.StatsAffected[0]);
 
+        //Heals player - one time effect
         if (item.GetType() == typeof(HealthGlobe))
         {
             CurrentHealth += item.StatsAffected[0];
@@ -90,6 +92,7 @@ public class Player : MonoBehaviour {
             Debug.Log("Player health: " + CurrentHealth);
             return;
         }
+        //Buffs/debuffs player - effect is equipped and stays on
         else if (item.GetType() == typeof(Buff))
         {
             if (pickup != null)
@@ -102,6 +105,7 @@ public class Player : MonoBehaviour {
         }
     }
 
+    //Applies damage from an enemy and returns the players current attack to damage the enemy
     public static int FightEnemy(int enemyAttack)
     {
         currentHealth -= (enemyAttack - defense);
@@ -112,6 +116,7 @@ public class Player : MonoBehaviour {
         return effectiveAttack;
     }
 
+    //Adds or subtracts values from the stat(s) affected by a current item
     private static void Equip(Item item)
     {
         //0: affectsCurrentHealth
@@ -150,6 +155,7 @@ public class Player : MonoBehaviour {
         }
     }
 
+    //The reverse of equip
     private static void UnEquip(Item item)
     {
         //0: affectsCurrentHealth
