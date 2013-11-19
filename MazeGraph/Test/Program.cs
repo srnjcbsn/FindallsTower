@@ -8,7 +8,7 @@ namespace Test
 	{
 		public static void Main ()
 		{
-			Maze maze = new Maze (20, 20);
+			Maze maze = new Maze (255, 125);
 
 			Vertex testVertex = new Vertex (new Point (0, 0), new Tile ());
 			HashSet<Vertex> testSet = new HashSet<Vertex> (new VertexComparer ());

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace MazeGraph
 {
@@ -39,11 +40,23 @@ namespace MazeGraph
 			rng = new Random ();
 			GenerateRandomEntryExitPoints ();
 
+			Stopwatch stopwatch = new Stopwatch ();
+			stopwatch.Start ();
 			Graph simpleGraph = new Graph ((dimension / 2) + 1, (_ => new Tile ()));
-			HashSet<Edge> pathEdges = simpleGraph.DFS (simpleGraph [new Point (0, 0)], new HashSet<Vertex> (), rng);
+			stopwatch.Stop ();
+
+			Console.WriteLine ("simplegraph generation took {0}", stopwatch.Elapsed);
+
+			stopwatch.Reset ();
+			stopwatch.Start ();
+			HashSet<Edge> pathEdges = new HashSet<Edge> (simpleGraph.RandomDFS (simpleGraph [new Point (0, 0)], new HashSet<Vertex> (), rng));
+			stopwatch.Stop ();
+			Console.WriteLine ("DFS took {0}", stopwatch.Elapsed);
 
 			int edgesLeftToAdd = additionalPaths;
 
+			stopwatch.Reset ();
+			stopwatch.Start ();
 			while (edgesLeftToAdd > 0)
 			{
 				Vertex randomVertex = simpleGraph [rng.Next ((dimension / 2) - 1), rng.Next ((dimension / 2) - 1)];
@@ -54,6 +67,9 @@ namespace MazeGraph
 					edgesLeftToAdd--;
 				}
 			}
+
+			stopwatch.Stop ();
+			Console.WriteLine ("Removing edges took {0}", stopwatch.Elapsed);
 			
 			mazeGraph = new Graph (dimension, (pos => ConstructMaze(simpleGraph, pathEdges, pos)));
 		}

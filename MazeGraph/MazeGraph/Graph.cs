@@ -113,15 +113,16 @@ namespace MazeGraph
 //			return new Graph (verts);
 //		}
 
-		public HashSet<Edge> DFS (Vertex vertex, HashSet<Vertex> explored, Random rng)
+		public List<Edge> RandomDFS (Vertex vertex, HashSet<Vertex> explored, Random rng)
 		{
-			return DFS (vertex, explored, (_ => false), rng);
+			return RandomDFS (vertex, explored, (_ => false), rng);
 		}
 
-		public HashSet<Edge> DFS (Vertex vertex, HashSet<Vertex> explored, Predicate<Vertex> ignoreVertex, Random rng)
+		public List<Edge> RandomDFS (Vertex vertex, HashSet<Vertex> explored, Predicate<Vertex> ignoreVertex, Random rng)
 		{
 			explored.Add (vertex);
-			HashSet<Edge> edgesUsed = new HashSet<Edge> (new EdgeComparer ());
+//			HashSet<Edge> edgesUsed = new HashSet<Edge> (new EdgeComparer ());
+			List<Edge> edgesUsed = new List<Edge> ();
 			HashSet<Edge> edgesLeft = new HashSet<Edge> (vertex.Edges);
 
 			while (edgesLeft.Any ())
@@ -134,7 +135,8 @@ namespace MazeGraph
 				if (!ignoreVertex (adjVertex) && !explored.Contains (adjVertex))
 				{
 					edgesUsed.Add (edge);
-					edgesUsed.UnionWith (DFS (adjVertex, explored, ignoreVertex, rng));
+//					edgesUsed.UnionWith (DFS (adjVertex, explored, ignoreVertex, rng));
+					edgesUsed.AddRange (RandomDFS (adjVertex, explored, ignoreVertex, rng));
 				}
 			}
 

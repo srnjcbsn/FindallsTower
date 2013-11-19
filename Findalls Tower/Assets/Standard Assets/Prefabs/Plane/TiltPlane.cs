@@ -26,6 +26,8 @@ public class TiltPlane : MonoBehaviour
 			Tile tile = maze[pos];
 			if (tile.GetType() == typeof(WallTile))
 				GenerateOuterWall (MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
+			//if (tile.GetType() == typeof(Tile))
+				
 		}		
 		
 		// generate outer walls
