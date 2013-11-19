@@ -60,7 +60,7 @@ public class EnemyAI : MonoBehaviour {
 
     void Wander()
 	{
-        Debug.Log("Wander");
+        //Debug.Log("Wander");
         System.Random rng = new System.Random();
         Vector3 targetPosition;
 
@@ -89,10 +89,10 @@ public class EnemyAI : MonoBehaviour {
         //proof-of-concept for LoS
         var floor = GameObject.Find("FloorTest");
         floor.layer = LayerMask.NameToLayer("FloorVis");        
-
+        
         Vector3 targetPosition = new Vector3(targetTransform.position.x, myTransform.position.y, targetTransform.position.z);
 
-        Debug.Log("Follow: "+targetPosition);
+        //Debug.Log("Follow: "+targetPosition);
 
         //Don't move if you are on top of the target
         if (CheckIfTooCloseToTarget(targetPosition, 0.2))

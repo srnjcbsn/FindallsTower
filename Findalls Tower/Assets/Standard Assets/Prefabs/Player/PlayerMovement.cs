@@ -51,7 +51,8 @@ public class PlayerMovement : MonoBehaviour
             myTransform.position += -myTransform.right * moveSpeed * Time.deltaTime;
         }
 
-        
-        //Debug.Log("" + rigidbody.angularVelocity);
+        if (rigidbody.velocity.magnitude > MaxVelocity)
+            rigidbody.velocity = rigidbody.velocity.normalized * MaxVelocity;
+        //Debug.Log("vel: " + myTransform.rigidbody.velocity.magnitude);
 	}
 }
