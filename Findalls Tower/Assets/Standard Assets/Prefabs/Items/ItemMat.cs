@@ -4,6 +4,7 @@ using System.Collections;
 public class ItemMat : MonoBehaviour 
 {
     public Material[] mats;
+    public int interval = 1000;
 
     private int iter = 0;
 
@@ -23,8 +24,9 @@ public class ItemMat : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        //Change material at a given interval
         time = System.DateTime.Now.TimeOfDay.TotalMilliseconds;
-        if (time >= timeOld + 1000)
+        if (time >= timeOld + interval)
         {
             timeOld = time;
             planeRenderer.material = mats[iter++];

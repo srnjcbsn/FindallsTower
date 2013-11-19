@@ -1,0 +1,21 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="MazeGraph/Maze.cs">
+    <Files>
+      <File FileName="MazeGraph/Maze.cs" Line="46" Column="4" />
+      <File FileName="MazeGraph/Graph.cs" Line="1" Column="1" />
+      <File FileName="MazeGraph/Vertex.cs" Line="1" Column="1" />
+      <File FileName="Test/Program.cs" Line="1" Column="1" />
+      <File FileName="MazeGraph/Tile.cs" Line="1" Column="1" />
+      <File FileName="MazeGraph/Edge.cs" Line="1" Column="1" />
+      <File FileName="MazeGraph/Point.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/srnjcbsn/Dropbox/MazeGraph/Test/Program.cs" line="14" column="1" />
+      <Breakpoint file="/Users/srnjcbsn/Dropbox/MazeGraph/MazeGraph/Maze.cs" line="45" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

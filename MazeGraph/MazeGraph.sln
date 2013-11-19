@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazeGraph", "MazeGraph\MazeGraph.csproj", "{EC94EC14-2B8D-42EA-B887-CD062F6E0366}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{5BE74870-C291-45A2-AD43-4AB8CC3B568A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5BE74870-C291-45A2-AD43-4AB8CC3B568A}.Debug|x86.ActiveCfg = Debug|x86
+		{5BE74870-C291-45A2-AD43-4AB8CC3B568A}.Debug|x86.Build.0 = Debug|x86
+		{5BE74870-C291-45A2-AD43-4AB8CC3B568A}.Release|x86.ActiveCfg = Release|x86
+		{5BE74870-C291-45A2-AD43-4AB8CC3B568A}.Release|x86.Build.0 = Release|x86
+		{EC94EC14-2B8D-42EA-B887-CD062F6E0366}.Debug|x86.ActiveCfg = Debug|x86
+		{EC94EC14-2B8D-42EA-B887-CD062F6E0366}.Debug|x86.Build.0 = Debug|x86
+		{EC94EC14-2B8D-42EA-B887-CD062F6E0366}.Release|x86.ActiveCfg = Release|x86
+		{EC94EC14-2B8D-42EA-B887-CD062F6E0366}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = MazeGraph\MazeGraph.csproj
+	EndGlobalSection
+EndGlobal

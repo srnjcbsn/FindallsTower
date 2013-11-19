@@ -1,13 +1,65 @@
 ﻿using UnityEngine;
 using System.Collections;
+using MazeGraph;
 
 public class TiltPlane : MonoBehaviour 
 {
 	public float maxAngle;
+	public Transform WallPrefab;
+	public int mazeSize;
+	public int additionalPaths;
+	
+	private Maze maze;
+	private float scale;
+	
+	public Maze Maze {
+		get { return maze; } 
+	}
 	
 	void Start () 
 	{
+		maze = new Maze (mazeSize, additionalPaths);
+		scale = 10f / mazeSize;
+		
+		foreach (Point pos in maze.AllPoints())
+		{
+			Tile tile = maze[pos];
+			if (tile.GetType() == typeof(WallTile))
+				GenerateOuterWall (MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
+			//if (tile.GetType() == typeof(Tile))
+				
+		}		
+		
+		// generate outer walls
+		GenerateOuterWall (new Vector3 (0, scale / 2, -5 - (scale / 2)), new Vector3 (10, scale, scale));   // South wall
+		GenerateOuterWall (new Vector3 (0, scale / 2, 5 + (scale / 2)), new Vector3 (10, scale, scale));    // North wall
+		GenerateOuterWall (new Vector3 (5 + (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));   // East Wall
+		GenerateOuterWall (new Vector3 (-5 - (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));  // West Wall
+	}
 	
+	private void GenerateOuterWall (Vector3 position, Vector3 scale)
+	{
+		Transform wall = (Transform)Instantiate (WallPrefab);
+		wall.parent = this.transform;
+		wall.localPosition = position;
+		wall.localScale = scale;
+	}
+	
+	public Vector3 MazeToPlaneCoords (Point mazeCoords)
+	{
+		int offset = 5;
+		
+		float scalefactor = (float)mazeSize / 10f;
+		
+		float planeX = (mazeCoords.X / scalefactor) - offset + scale / 2;
+		float planeY = (mazeCoords.Y / scalefactor) - offset + scale / 2;
+		
+		return new Vector3(planeX, scale / 2, planeY);
+	}
+	
+	public Point PlaneToMazeCoords (Vector3 planeCoords)
+	{
+		return new Point(0,0);
 	}
 	
 	void Update () 
@@ -45,7 +97,5 @@ public class TiltPlane : MonoBehaviour
 
         Vector3 newRotation = new Vector3(newXRotation, 0, newZRotation);
         transform.localEulerAngles = newRotation;
-        
-		
 	}
 }
