@@ -6,6 +6,7 @@ public class TiltPlane : MonoBehaviour
 {
 	public float maxAngle;
 	public Transform WallPrefab;
+	public Transform PathPrefab;
 	public int mazeSize;
 	public int additionalPaths;
 	
@@ -25,24 +26,32 @@ public class TiltPlane : MonoBehaviour
 		{
 			Tile tile = maze[pos];
 			if (tile.GetType() == typeof(WallTile))
-				GenerateOuterWall (MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
-			//if (tile.GetType() == typeof(Tile))
-				
+			{
+				Transform thistile = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
+				thistile.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
+			}
+			if (tile.GetType() == typeof(Tile))
+			{
+				Transform thistile = GenerateTile(PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
+				thistile.gameObject.layer = LayerMask.NameToLayer ("FloorVis");
+			}
 		}		
 		
 		// generate outer walls
-		GenerateOuterWall (new Vector3 (0, scale / 2, -5 - (scale / 2)), new Vector3 (10, scale, scale));   // South wall
-		GenerateOuterWall (new Vector3 (0, scale / 2, 5 + (scale / 2)), new Vector3 (10, scale, scale));    // North wall
-		GenerateOuterWall (new Vector3 (5 + (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));   // East Wall
-		GenerateOuterWall (new Vector3 (-5 - (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));  // West Wall
+		GenerateTile (WallPrefab, new Vector3 (0, scale / 2, -5 - (scale / 2)), new Vector3 (10, scale, scale));   // South wall
+		GenerateTile (WallPrefab, new Vector3 (0, scale / 2, 5 + (scale / 2)), new Vector3 (10, scale, scale));    // North wall
+		GenerateTile (WallPrefab, new Vector3 (5 + (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));   // East Wall
+		GenerateTile (WallPrefab, new Vector3 (-5 - (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));  // West Wall
 	}
 	
-	private void GenerateOuterWall (Vector3 position, Vector3 scale)
+	private Transform GenerateTile (Transform TileType, Vector3 position, Vector3 scale)
 	{
-		Transform wall = (Transform)Instantiate (WallPrefab);
-		wall.parent = this.transform;
-		wall.localPosition = position;
-		wall.localScale = scale;
+		Transform tile = (Transform)Instantiate (WallPrefab);
+		tile.parent = this.transform;
+		tile.localPosition = position;
+		tile.localScale = scale;
+		
+		return tile;
 	}
 	
 	public Vector3 MazeToPlaneCoords (Point mazeCoords)
@@ -59,7 +68,13 @@ public class TiltPlane : MonoBehaviour
 	
 	public Point PlaneToMazeCoords (Vector3 planeCoords)
 	{
-		return new Point(0,0);
+		int offset = 5;
+		float scalefactor = (float)mazeSize / 10f;
+		
+		int mazeX = Mathf.CeilToInt( (planeCoords.x + offset) * scalefactor);
+		int mazeY = Mathf.CeilToInt( (planeCoords.z + offset) * scalefactor);
+		
+		return new Point(mazeX, mazeY);
 	}
 	
 	void Update () 
@@ -97,5 +112,7 @@ public class TiltPlane : MonoBehaviour
 
         Vector3 newRotation = new Vector3(newXRotation, 0, newZRotation);
         transform.localEulerAngles = newRotation;
+		
+		Debug.Log (PlaneToMazeCoords(new Vector3(-3,0,4)));
 	}
 }

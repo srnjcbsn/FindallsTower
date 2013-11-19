@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 
 Project("{E01B21BD-B0EE-9E91-D0BC-09C9C6EDCD13}") = "Findalls Tower", "Assembly-CSharp-firstpass-vs.csproj", "{1F0F965E-7595-82CA-9DFE-61FE5AD6DE02}"
 EndProject
+Project("{E01B21BD-B0EE-9E91-D0BC-09C9C6EDCD13}") = "Findalls Tower", "Assembly-CSharp-vs.csproj", "{09F2A1B5-D47B-82F7-C00F-03FB59D7FA5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,11 +15,15 @@ Global
 		{1F0F965E-7595-82CA-9DFE-61FE5AD6DE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F0F965E-7595-82CA-9DFE-61FE5AD6DE02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F0F965E-7595-82CA-9DFE-61FE5AD6DE02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09F2A1B5-D47B-82F7-C00F-03FB59D7FA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09F2A1B5-D47B-82F7-C00F-03FB59D7FA5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09F2A1B5-D47B-82F7-C00F-03FB59D7FA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09F2A1B5-D47B-82F7-C00F-03FB59D7FA5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																					GlobalSection(MonoDevelopProperties) = preSolution
+																																																																							GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																																			GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> .theirs
