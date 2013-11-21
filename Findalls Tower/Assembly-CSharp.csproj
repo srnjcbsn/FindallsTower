@@ -44,7 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\PlayerLighting.cs" />
+     <Compile Include="Assets\PlayerLighting_NOTUSED.cs" />
  <Reference Include="MazeGraph">
  <HintPath>Assets\MazeGraph.dll</HintPath>
  </Reference>
