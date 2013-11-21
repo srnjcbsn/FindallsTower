@@ -25,11 +25,13 @@ public class TiltPlane : MonoBehaviour
 		foreach (Point pos in maze.AllPoints())
 		{
 			Tile tile = maze[pos];
+			
 			if (tile.GetType() == typeof(WallTile))
 			{
 				Transform thistile = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
 				thistile.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
 			}
+			
 			if (tile.GetType() == typeof(Tile))
 			{
 				Transform thistile = GenerateTile(PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
@@ -75,6 +77,11 @@ public class TiltPlane : MonoBehaviour
 		int mazeY = Mathf.CeilToInt( (planeCoords.z + offset) * scalefactor);
 		
 		return new Point(mazeX, mazeY);
+	}
+	
+	public bool AreTilesWithinRange(Tile t1, Tile t2, int range)
+	{
+		return maze.AreTilesWithinRange(t1, t2, range);
 	}
 	
 	void Update () 

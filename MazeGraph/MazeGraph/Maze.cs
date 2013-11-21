@@ -40,23 +40,13 @@ namespace MazeGraph
 			rng = new Random ();
 			GenerateRandomEntryExitPoints ();
 
-			Stopwatch stopwatch = new Stopwatch ();
-			stopwatch.Start ();
-			Graph simpleGraph = new Graph ((dimension / 2) + 1, (_ => new Tile ()));
-			stopwatch.Stop ();
+			Graph simpleGraph = new Graph ((dimension / 2) + 1, (pos => new Tile (pos)));
 
-			Console.WriteLine ("simplegraph generation took {0}", stopwatch.Elapsed);
+			HashSet<Edge> pathEdges = new HashSet<Edge> (simpleGraph.RandomDFS (simpleGraph [new Point (0, 0)], new HashSet<Vertex> (), rng), new EdgeComparer ());
 
-			stopwatch.Reset ();
-			stopwatch.Start ();
-			HashSet<Edge> pathEdges = new HashSet<Edge> (simpleGraph.RandomDFS (simpleGraph [new Point (0, 0)], new HashSet<Vertex> (), rng));
-			stopwatch.Stop ();
-			Console.WriteLine ("DFS took {0}", stopwatch.Elapsed);
+			Console.WriteLine (pathEdges.Count);
 
 			int edgesLeftToAdd = additionalPaths;
-
-			stopwatch.Reset ();
-			stopwatch.Start ();
 			while (edgesLeftToAdd > 0)
 			{
 				Vertex randomVertex = simpleGraph [rng.Next ((dimension / 2) - 1), rng.Next ((dimension / 2) - 1)];
@@ -67,29 +57,36 @@ namespace MazeGraph
 					edgesLeftToAdd--;
 				}
 			}
-
-			stopwatch.Stop ();
-			Console.WriteLine ("Removing edges took {0}", stopwatch.Elapsed);
 			
 			mazeGraph = new Graph (dimension, (pos => ConstructMaze(simpleGraph, pathEdges, pos)));
+			pathGraph = MazeGraph.SubGraph (mazeGraph[entryPoint], (vertex => vertex.Content.GetType () == typeof(WallTile)));
+		}
+
+		public bool AreTilesWithinRange (Tile t1, Tile t2, int range)
+		{
+			List<Edge> path = pathGraph.DFS (pathGraph [t1.Position], new HashSet<Vertex> (), pathGraph [t2.Position], range);
+
+			if (path.Any ())
+				return true;
+			else
+				return false;
 		}
 
 		private Tile ConstructMaze (Graph simpleGraph, HashSet<Edge> pathEdges, Point pos)
 		{
 			if (pos.X % 2 == 0 && pos.Y % 2 == 0)
-				return new Tile ();
+				return new Tile (pos);
 
 			if (pos.X % 2 == 1 && pos.Y % 2 == 1)
-				return new WallTile ();
+				return new WallTile (pos);
 
 			Vertex vert1 = simpleGraph [(int)Math.Floor (pos.X / 2.0), (int)Math.Floor (pos.Y / 2.0)];
 			Vertex vert2 = simpleGraph [(int)Math.Ceiling (pos.X / 2.0), (int)Math.Ceiling (pos.Y / 2.0)];
 
 			if (pathEdges.Contains (new Edge (vert1, vert2)))
-				return new Tile ();
+				return new Tile (pos);
 			else
-				return new WallTile ();
-
+				return new WallTile (pos);
 		}
 
 		private void GenerateRandomEntryExitPoints ()
@@ -113,12 +110,12 @@ namespace MazeGraph
 		private Tile RandomTile(Random rnd, Point position)
 		{
 			if (position == entryPoint || position == exitPoint)
-				return new Tile ();
+				return new Tile (position);
 
 			if (RandomBool (rnd))
-				return new Tile ();
+				return new Tile (position);
 			else
-				return new WallTile ();
+				return new WallTile (position);
 		}
 
 		private bool RandomBool (Random rnd)

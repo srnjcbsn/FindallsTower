@@ -45,6 +45,7 @@
     <Compile Include="Tiles\EntryTile.cs" />
     <Compile Include="Tiles\ExitTile.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="Artifact.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

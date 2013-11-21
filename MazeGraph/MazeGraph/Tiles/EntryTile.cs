@@ -4,7 +4,7 @@ namespace MazeGraph
 {
 	public class EntryTile : Tile
 	{
-		public EntryTile ()
+		public EntryTile (Point pos) : base (pos)
 		{
 		}
 	}
