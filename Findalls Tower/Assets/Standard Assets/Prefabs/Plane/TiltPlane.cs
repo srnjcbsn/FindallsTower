@@ -2,7 +2,7 @@
 using System.Collections;
 using MazeGraph;
 
-public class TiltPlane : MonoBehaviour 
+public class TiltPlane : MonoBehaviour
 {
 	public float maxAngle;
 	public Transform WallPrefab;
@@ -30,12 +30,19 @@ public class TiltPlane : MonoBehaviour
 			{
 				Transform thistile = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
 				thistile.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
+				
+//				TileScript ts = thistile.GetComponent<TileScript> ();
+//				ts.Model = tile;
 			}
 			
 			if (tile.GetType() == typeof(Tile))
 			{
-				Transform thistile = GenerateTile(PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
+				Transform thistile = GenerateTile (PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
 				thistile.gameObject.layer = LayerMask.NameToLayer ("FloorVis");
+				
+				
+				TileScript ts = thistile.GetComponent<TileScript> ();
+				ts.Model = tile;
 			}
 		}		
 		
@@ -46,12 +53,12 @@ public class TiltPlane : MonoBehaviour
 		GenerateTile (WallPrefab, new Vector3 (-5 - (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));  // West Wall
 	}
 	
-	private Transform GenerateTile (Transform TileType, Vector3 position, Vector3 scale)
+	private Transform GenerateTile (Transform TileType, Vector3 position, Vector3 scaleVector)
 	{
-		Transform tile = (Transform)Instantiate (WallPrefab);
+		Transform tile = (Transform)Instantiate (TileType);
 		tile.parent = this.transform;
 		tile.localPosition = position;
-		tile.localScale = scale;
+		tile.localScale = scaleVector;
 		
 		return tile;
 	}
@@ -119,7 +126,5 @@ public class TiltPlane : MonoBehaviour
 
         Vector3 newRotation = new Vector3(newXRotation, 0, newZRotation);
         transform.localEulerAngles = newRotation;
-		
-		Debug.Log (PlaneToMazeCoords(new Vector3(-3,0,4)));
 	}
 }
