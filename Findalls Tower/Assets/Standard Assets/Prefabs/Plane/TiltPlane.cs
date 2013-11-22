@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using MazeGraph;
+using System.Linq;
 
 public class TiltPlane : MonoBehaviour
 {
@@ -17,33 +18,39 @@ public class TiltPlane : MonoBehaviour
 		get { return maze; } 
 	}
 	
+	public Dictionary<Tile, Transform> tileDict;
+	
 	void Start () 
 	{
+		tileDict = new Dictionary<Tile, Transform> ();
 		maze = new Maze (mazeSize, additionalPaths);
 		scale = 10f / mazeSize;
 		
 		foreach (Point pos in maze.AllPoints())
 		{
 			Tile tile = maze[pos];
+			Transform tileTransform = null;
 			
 			if (tile.GetType() == typeof(WallTile))
 			{
-				Transform thistile = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
-				thistile.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
+				tileTransform = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
+				tileTransform.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
 				
-//				TileScript ts = thistile.GetComponent<TileScript> ();
-//				ts.Model = tile;
+//				tscript = thistile.GetComponent<TileScript> ();
+//				tscript.Model = tile;
 			}
 			
 			if (tile.GetType() == typeof(Tile))
 			{
-				Transform thistile = GenerateTile (PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
-				thistile.gameObject.layer = LayerMask.NameToLayer ("FloorVis");
+				tileTransform = GenerateTile (PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
+				tileTransform.gameObject.layer = LayerMask.NameToLayer ("FloorHid");
 				
 				
-				TileScript ts = thistile.GetComponent<TileScript> ();
-				ts.Model = tile;
+				TileScript tscript = tileTransform.GetComponent<TileScript> ();
+				tscript.Model = tile;
 			}
+			
+			tileDict.Add(tile, tileTransform);
 		}		
 		
 		// generate outer walls
@@ -80,8 +87,8 @@ public class TiltPlane : MonoBehaviour
 		int offset = 5;
 		float scalefactor = (float)mazeSize / 10f;
 		
-		int mazeX = Mathf.CeilToInt( (planeCoords.x + offset) * scalefactor);
-		int mazeY = Mathf.CeilToInt( (planeCoords.z + offset) * scalefactor);
+		int mazeX = Mathf.FloorToInt( (planeCoords.x + offset) * scalefactor);
+		int mazeY = Mathf.FloorToInt( (planeCoords.z + offset) * scalefactor);
 		
 		return new Point(mazeX, mazeY);
 	}
@@ -89,6 +96,24 @@ public class TiltPlane : MonoBehaviour
 	public bool AreTilesWithinRange(Tile t1, Tile t2, int range)
 	{
 		return maze.AreTilesWithinRange(t1, t2, range);
+	}
+	
+	public void LightTilesInRange (Tile fromTile, int range)
+	{
+		HashSet<Vertex> vertices = new HashSet<Vertex> ();
+		maze.MazeGraph.DFSTraversal (maze.MazeGraph[fromTile.Position], vertices, (vert => TileInRange (fromTile.Position, vert.Position, range)));
+		
+		foreach (Vertex vertex in vertices)
+		{
+			Tile tile = vertex.Content;
+			tileDict[tile].gameObject.layer = LayerMask.NameToLayer("FloorVis");
+		}
+	}
+	
+	private bool TileInRange (Point fromPos, Point pos, int range)
+	{	
+		return (pos.X == fromPos.X && Mathf.Abs(Mathf.Abs(fromPos.Y) - Mathf.Abs(pos.Y)) < range)
+				|| (pos.Y == fromPos.Y && Mathf.Abs(Mathf.Abs(fromPos.X) - Mathf.Abs(pos.X)) < range);
 	}
 	
 	void Update () 

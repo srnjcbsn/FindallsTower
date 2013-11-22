@@ -52,10 +52,6 @@
  <HintPath>Assets\MazeGraph.dll</HintPath>
  </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{1F0F965E-7595-82CA-9DFE-61FE5AD6DE02}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	   Other similar extension points exist, see Microsoft.Common.targets.
