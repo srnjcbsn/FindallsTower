@@ -17,6 +17,8 @@ public class Player : MonoBehaviour {
 
     private static int effectiveAttack;
     public static int EffectiveAttack { get { return effectiveAttack; } set { effectiveAttack = value; } }
+	
+	public int visionRange;
 
     private static Item armor;
     public static string Armor

@@ -133,14 +133,14 @@ namespace MazeGraph
 
 			List<Edge> retList = new List<Edge> ();
 
-			if (distanceToCutoff == 0)
+			if (distanceToCutoff < 0)
 				return retList;
 
 			foreach (Edge edge in vertex.Edges)
 			{
 				Vertex adjVertex = edge.OtherVertex (vertex);
 
-				if (explored.Contains (vertex))
+				if (explored.Contains (adjVertex))
 					continue;
 
 				if (adjVertex < target)

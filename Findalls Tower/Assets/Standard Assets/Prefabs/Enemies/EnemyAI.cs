@@ -5,17 +5,16 @@ public class EnemyAI : MonoBehaviour {
 
     public float Force = 10;
     public int ThinkEveryXFrame = 10;    
-    public double VisionRange = 0;
-    public float moveSpeed = 2.2f;
+    public double VisionRange = 1.5;
+    public float moveSpeed = 1.1f;
     public int rotationSpeed = 4; //speed of turning
     public bool WanderPackage = true;
     public bool FollowPackage = true;
-    public GameObject WallPrefab;
 
     private int counter = 0;
     private Transform targetTransform; 
     private Transform myTransform;
-    private Transform lastKnownLocation;
+    private Vector3 lastKnownLocation;
     //private GameObject plane;
     private TiltPlane planescript;
     private TileScript tilescript;
@@ -53,8 +52,8 @@ public class EnemyAI : MonoBehaviour {
 	
     void Update()
     {
-        if (targetPosition == myTransform.position)
-                IsExecutingWander = false;
+        if (planescript.PlaneToMazeCoords(targetPosition) == planescript.PlaneToMazeCoords(myTransform.position))
+            IsExecutingWander = false;
         if (IsExecutingWander)
         {
             Wander();
@@ -70,7 +69,7 @@ public class EnemyAI : MonoBehaviour {
         {
             if (!IsExecutingFollow)
             {
-                Debug.Log("Can try to see player");
+                //Debug.Log("Can try to see player");
                 //Checks if a straightline exists to the player (aka the enemy have LoS to the player) 
                 if (!StraightRoadExists(planescript.PlaneToMazeCoords(myTransform.position), targetPoint))
                     target = null;
@@ -111,7 +110,7 @@ public class EnemyAI : MonoBehaviour {
     void Wander()
 	{
         IsExecutingFollow = false;
-        Debug.Log("Wander");  
+        //Debug.Log("Wander");  
         if (!IsExecutingWander)
         {
             float directionX, directionZ;
@@ -127,10 +126,10 @@ public class EnemyAI : MonoBehaviour {
                 negZ = rng.Next(-1, 2);
                 targetPosition = new Vector3(myTransform.position.x + (negX * directionX), myTransform.position.y, myTransform.position.z + (negZ * directionZ));
                 WanderTarget = planescript.PlaneToMazeCoords(targetPosition);
-                Debug.Log("Looping..." + WanderTarget + " " + planescript.PlaneToMazeCoords(myTransform.position));
+                //Debug.Log("Looping..." + WanderTarget + " " + planescript.PlaneToMazeCoords(myTransform.position));
                 if (planescript.GetTileOfPoint(WanderTarget).GetType() != typeof(MazeGraph.WallTile))
                 {
-                    Debug.Log("target not wall");
+                    //Debug.Log("target not wall");
                     if (StraightRoadExists(planescript.PlaneToMazeCoords(myTransform.position), WanderTarget))
                         targetPosIsNotValid = false;
                 }
@@ -151,15 +150,16 @@ public class EnemyAI : MonoBehaviour {
         }
 
         //Face the target
-        var rot = Quaternion.LookRotation(targetPosition - myTransform.position);
-        myTransform.rotation = Quaternion.Slerp(myTransform.rotation, rot, 5f * Time.deltaTime);        
+        Quaternion rot = Quaternion.LookRotation(targetPosition - myTransform.position);
+        if (Quaternion.Angle(myTransform.rotation, rot) > 0.1)
+            myTransform.rotation = Quaternion.Slerp(myTransform.rotation, rot, 10f * Time.deltaTime);
         
 
         //move towards the target
         myTransform.position += myTransform.forward * (moveSpeed / 2) * Time.deltaTime;
 
-        //if no success in reaching target after 100 frames, abort the wander target
-        if (WanderCounter > 100)
+        //if no success in reaching target after 120 frames, abort the wander target
+        if (WanderCounter > 120)
             IsExecutingWander = false;
 
         WanderCounter++;
@@ -171,13 +171,13 @@ public class EnemyAI : MonoBehaviour {
         if (!IsExecutingFollow)
         {
             targetPosition = new Vector3(targetTransform.position.x, myTransform.position.y, targetTransform.position.z);
-            lastKnownLocation = targetTransform;
+            lastKnownLocation = new Vector3(targetTransform.position.x, myTransform.position.y, targetTransform.position.z);
             IsExecutingFollow = true;
         }
         else
-            targetPosition = new Vector3(lastKnownLocation.position.x, myTransform.position.y, lastKnownLocation.position.z);
+            targetPosition = new Vector3(lastKnownLocation.x, myTransform.position.y, lastKnownLocation.z);
 
-        Debug.Log("Follow: "+targetPosition);
+        //Debug.Log("Follow: " + targetPosition + " is executing a follow order: " + IsExecutingFollow);
 
         if (planescript.PlaneToMazeCoords(targetPosition).X == planescript.PlaneToMazeCoords(myTransform.position).X &&
             planescript.PlaneToMazeCoords(targetPosition).Y == planescript.PlaneToMazeCoords(myTransform.position).Y)
@@ -200,11 +200,11 @@ public class EnemyAI : MonoBehaviour {
         myTransform.position += myTransform.forward * moveSpeed * Time.deltaTime;
     }
 
-    //void OnCollisonEnter(Collision collison)
-    //{
-    //    if (collison.gameObject.tag.Equals("Wall"))
-    //        IsExecutingWander = false;
-    //}
+    void OnCollisonEnter(Collision collison)
+    {
+        if (collison.gameObject.tag.Equals("Wall"))
+            IsExecutingWander = false;
+    }
 
     bool CheckIfTooCloseToTarget(Vector3 targetPosition, double precision)
     {
@@ -242,7 +242,7 @@ public class EnemyAI : MonoBehaviour {
 
         if (xDif > 0 && yDif > 0)
             return false;
-        Debug.Log("only xDif or yDif is larger than 0. Sum is: " + (xDif + yDif) + " target/my-pos x/y: " + targetPos.X + " " + targetPos.Y + " " + myPos.X + " " + myPos.Y);
+        //Debug.Log("only xDif or yDif is larger than 0. Sum is: " + (xDif + yDif) + " target/my-pos x/y: " + targetPos.X + " " + targetPos.Y + " " + myPos.X + " " + myPos.Y);
         return planescript.AreTilesWithinRange(planescript.GetTileOfPoint(myPos), planescript.GetTileOfPoint(targetPos), xDif + yDif);
     }
 }

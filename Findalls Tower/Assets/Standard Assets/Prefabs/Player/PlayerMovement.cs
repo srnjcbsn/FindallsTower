@@ -3,11 +3,8 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour 
 {
-
-    public float force;
-    public int ReduceForceXFrame = 10;
-    public int moveSpeed = 2;
-    public int rotationSpeed = 3; //speed of turning
+    public float moveSpeed = 1.1f;
+    public int rotationSpeed = 10; //speed of turning
     public float MaxVelocity = 1.7f;
 
     private Transform myTransform;
@@ -25,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
 	
 	void Update () 
     {
-        Vector3 infront = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z + 1);
+        Vector3 infront = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z + 10);
 
         myTransform.rotation = Quaternion.Slerp(myTransform.rotation,
         Quaternion.LookRotation(infront - myTransform.position), rotationSpeed * Time.deltaTime);
@@ -49,6 +46,10 @@ public class PlayerMovement : MonoBehaviour
         {
             //rigidbody.AddForce(-force, 0f, 0f, ForceMode.Force);
             myTransform.position += -myTransform.right * moveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            rigidbody.isKinematic = !rigidbody.isKinematic;
         }
 
         if (rigidbody.velocity.magnitude > MaxVelocity)

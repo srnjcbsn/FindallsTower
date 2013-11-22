@@ -5,11 +5,12 @@ using MazeGraph;
 public class TileScript : MonoBehaviour 
 {
 	public Tile Model;
+	private TiltPlane plane;
 	
 	// Use this for initialization
 	void Start () 
 	{
-		
+		plane = GameObject.Find ("Plane").GetComponent<TiltPlane> ();
 	}
 	
 	// Update is called once per frame
@@ -20,12 +21,23 @@ public class TileScript : MonoBehaviour
 	
 	public bool IsTileInWalkingRange (Tile other, int range)
 	{
-		GameObject plane = GameObject.Find ("Plane");
-		return plane.GetComponent<TiltPlane>().AreTilesWithinRange(Model, other, range);
+		return plane.AreTilesWithinRange(Model, other, range);
 	}
 	
-	void OnCollisionEnter ()
+    //void OnCollisionEnter (Collision collision)
+    //{
+    //    Transform collidingTransform = collision.transform;
+		
+    //    if (collidingTransform.name == "Player")
+    //    {
+    //        LightTilesInRange (collidingTransform.GetComponent<Player> ().visionRange);
+    //    }
+    //}
+	
+	private void LightTilesInRange (int range)
 	{
-		//Debug.Log("COLLISION");	
+		Debug.Log(Model);
+		Debug.Log(plane);
+		plane.LightTilesInRange(Model, range);
 	}
 }

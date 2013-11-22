@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using MazeGraph;
+using System.Linq;
 
 public class TiltPlane : MonoBehaviour
 {
@@ -18,43 +19,53 @@ public class TiltPlane : MonoBehaviour
 		get { return maze; } 
 	}
     
+	public Dictionary<Tile, Transform> tileDict;
+	
 	void Start () 
 	{
+		tileDict = new Dictionary<Tile, Transform> ();
 		maze = new Maze (mazeSize, additionalPaths);
-		scale = 10f / mazeSize;
+        scale = 10f / mazeSize;
+        Transform tileTransform = null;
 
 		foreach (Point pos in maze.AllPoints())
 		{
-            //continue;
 			Tile tile = maze[pos];
 			
 			if (tile.GetType() == typeof(WallTile))
 			{
-				Transform thistile = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
-				thistile.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
+				tileTransform = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
+				tileTransform.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
 				
-//				TileScript ts = thistile.GetComponent<TileScript> ();
-//				ts.Model = tile;
-                thistile.gameObject.tag = "Wall";
+//				tscript = thistile.GetComponent<TileScript> ();
+//				tscript.Model = tile;
+                tileTransform.gameObject.tag = "Wall";
 			}
 			
 			if (tile.GetType() == typeof(Tile))
 			{
-				Transform thistile = GenerateTile (PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
-				thistile.gameObject.layer = LayerMask.NameToLayer ("FloorVis");
+				tileTransform = GenerateTile (PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
+				tileTransform.gameObject.layer = LayerMask.NameToLayer ("FloorVis");
 				
 				
-				TileScript ts = thistile.GetComponent<TileScript> ();
-				ts.Model = tile;
+				TileScript tscript = tileTransform.GetComponent<TileScript> ();
+				tscript.Model = tile;
 			}
+			
+			tileDict.Add(tile, tileTransform);
 		}		
 		
 		// generate outer walls
-		GenerateTile (WallPrefab, new Vector3 (0, scale / 2, -5 - (scale / 2)), new Vector3 (10, scale, scale));   // South wall
-		GenerateTile (WallPrefab, new Vector3 (0, scale / 2, 5 + (scale / 2)), new Vector3 (10, scale, scale));    // North wall
-		GenerateTile (WallPrefab, new Vector3 (5 + (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));   // East Wall
-		GenerateTile (WallPrefab, new Vector3 (-5 - (scale / 2), scale / 2, 0), new Vector3 (scale, scale, 10 + (scale * 2)));  // West Wall
-	}
+        tileTransform = GenerateTile(WallPrefab, new Vector3(0, scale / 2, -5 - (scale / 2)), new Vector3(10, scale, scale));   // South wall
+        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
+        tileTransform = GenerateTile(WallPrefab, new Vector3(0, scale / 2, 5 + (scale / 2)), new Vector3(10, scale, scale));    // North wall
+        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
+        tileTransform = GenerateTile(WallPrefab, new Vector3(5 + (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));   // East Wall
+        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
+        tileTransform = GenerateTile(WallPrefab, new Vector3(-5 - (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));  // West Wall
+        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
+    }
+
 	
 	private Transform GenerateTile (Transform TileType, Vector3 position, Vector3 scaleVector)
 	{
@@ -84,7 +95,7 @@ public class TiltPlane : MonoBehaviour
 		float scalefactor = (float)mazeSize / 10f;
 		
 		int mazeX = Mathf.FloorToInt( (planeCoords.x + offset) * scalefactor);
-        int mazeY = Mathf.FloorToInt((planeCoords.z + offset) * scalefactor);
+		int mazeY = Mathf.FloorToInt( (planeCoords.z + offset) * scalefactor);
 		
 		return new Point(mazeX, mazeY);
 	}
@@ -97,6 +108,24 @@ public class TiltPlane : MonoBehaviour
 	public bool AreTilesWithinRange(Tile t1, Tile t2, int range)
 	{
 		return maze.AreTilesWithinRange(t1, t2, range);
+	}
+	
+	public void LightTilesInRange (Tile fromTile, int range)
+	{
+		HashSet<Vertex> vertices = new HashSet<Vertex> ();
+		maze.MazeGraph.DFSTraversal (maze.MazeGraph[fromTile.Position], vertices, (vert => TileInRange (fromTile.Position, vert.Position, range)));
+		
+		foreach (Vertex vertex in vertices)
+		{
+			Tile tile = vertex.Content;
+			tileDict[tile].gameObject.layer = LayerMask.NameToLayer("FloorVis");
+		}
+	}
+	
+	private bool TileInRange (Point fromPos, Point pos, int range)
+	{	
+		return (pos.X == fromPos.X && Mathf.Abs(Mathf.Abs(fromPos.Y) - Mathf.Abs(pos.Y)) < range)
+				|| (pos.Y == fromPos.Y && Mathf.Abs(Mathf.Abs(fromPos.X) - Mathf.Abs(pos.X)) < range);
 	}
 	
 	void Update () 

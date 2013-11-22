@@ -1,6 +1,7 @@
 using System;
 using MazeGraph;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Test
 {
@@ -9,9 +10,12 @@ namespace Test
 		public static void Main ()
 		{
 			Maze maze = new Maze (35, 35);
+			Graph pathGraph = maze.PathGraph;
 
-			Random rnd = new Random ();
-			Console.WriteLine (rnd.Next (0, 1));
+			Vertex vertex = pathGraph.Vertices.First ();
+			Tile t1 = pathGraph [vertex.Position].Content;
+			Tile t2 = pathGraph [vertex.Adjacent.First ().Position].Content;
+			Console.WriteLine (maze.AreTilesWithinRange (t1, t2, 1));
 		}
 	}
 }
