@@ -2,9 +2,9 @@ using System;
 
 namespace MazeGraph
 {
-	public class ExitTile
+	public class ExitTile : Tile
 	{
-		public ExitTile ()
+		public ExitTile (Point pos) : base (pos)
 		{
 		}
 	}

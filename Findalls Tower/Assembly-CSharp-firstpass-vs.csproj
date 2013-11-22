@@ -58,6 +58,7 @@
      <Compile Include="Assets\Standard Assets\Prefabs\Player\PlayerMovement.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\PlayerStats.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Traps\TrapTrigger.cs" />
+     <Compile Include="Assets\Standard Assets\Prefabs\Walls\Inner Walls\TileScript.cs" />
      <Compile Include="Assets\Standard Assets\Scripts\General Scripts\ActivateTrigger.cs" />
      <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\CombineChildren.cs" />
      <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\MeshCombineUtility.cs" />

@@ -8,12 +8,7 @@ namespace Test
 	{
 		public static void Main ()
 		{
-			Maze maze = new Maze (255, 125);
-
-			Vertex testVertex = new Vertex (new Point (0, 0), new Tile ());
-			HashSet<Vertex> testSet = new HashSet<Vertex> (new VertexComparer ());
-			testSet.Add (testVertex);
-			testSet.Add (new Vertex (testVertex));
+			Maze maze = new Maze (35, 35);
 
 			Random rnd = new Random ();
 			Console.WriteLine (rnd.Next (0, 1));

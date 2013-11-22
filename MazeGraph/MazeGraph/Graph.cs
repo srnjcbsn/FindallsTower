@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace MazeGraph
 {
@@ -86,7 +87,7 @@ namespace MazeGraph
 //			//TODO: Throw exception if more than one subgraph?
 //			return SubGraphs (ignoreVertex).FirstOrDefault ();
 //		}
-
+//
 //		public IEnumerable<Graph> SubGraphs (Predicate<Vertex> ignoreVertex)
 //		{
 //			HashSet<Vertex> explored = new HashSet<Vertex> (new VertexComparer ());
@@ -104,14 +105,55 @@ namespace MazeGraph
 //			}
 //		}
 
-//		public Graph SubGraph (Vertex fromVertex, Predicate<Vertex> ignoreVertex)
-//		{
-//			HashSet<Vertex> verts = new HashSet<Vertex> ();
-//
-//			DFS (fromVertex, verts, ignoreVertex);
-//
-//			return new Graph (verts);
-//		}
+		public Graph SubGraph (Vertex fromVertex, Predicate<Vertex> ignoreVertex)
+		{
+			HashSet<Vertex> verts = new HashSet<Vertex> ();
+
+			DFSTraversal (fromVertex, verts, ignoreVertex);
+
+			return new Graph (verts);
+		}
+
+		public void DFSTraversal (Vertex fromVertex, HashSet<Vertex> explored, Predicate<Vertex> ignoreVertex)
+		{
+			explored.Add (fromVertex);
+
+			foreach (Vertex adjVertex in fromVertex.Adjacent)
+			{
+				if (explored.Contains (adjVertex) || ignoreVertex (adjVertex))
+					continue;
+
+				DFSTraversal (adjVertex, explored, ignoreVertex);
+			}
+		}
+
+		public List<Edge> DFS (Vertex vertex, HashSet<Vertex> explored, Vertex target, int distanceToCutoff)
+		{
+			explored.Add (vertex);
+
+			List<Edge> retList = new List<Edge> ();
+
+			if (distanceToCutoff == 0)
+				return retList;
+
+			foreach (Edge edge in vertex.Edges)
+			{
+				Vertex adjVertex = edge.OtherVertex (vertex);
+
+				if (explored.Contains (vertex))
+					continue;
+
+				if (adjVertex < target)
+				{
+					retList.Add (edge);
+					return retList;
+				}
+
+				retList.AddRange (DFS (adjVertex, explored, target, distanceToCutoff - 1));
+			}
+
+			return retList;
+		}
 
 		public List<Edge> RandomDFS (Vertex vertex, HashSet<Vertex> explored, Random rng)
 		{
@@ -121,7 +163,6 @@ namespace MazeGraph
 		public List<Edge> RandomDFS (Vertex vertex, HashSet<Vertex> explored, Predicate<Vertex> ignoreVertex, Random rng)
 		{
 			explored.Add (vertex);
-//			HashSet<Edge> edgesUsed = new HashSet<Edge> (new EdgeComparer ());
 			List<Edge> edgesUsed = new List<Edge> ();
 			HashSet<Edge> edgesLeft = new HashSet<Edge> (vertex.Edges);
 
@@ -135,7 +176,6 @@ namespace MazeGraph
 				if (!ignoreVertex (adjVertex) && !explored.Contains (adjVertex))
 				{
 					edgesUsed.Add (edge);
-//					edgesUsed.UnionWith (DFS (adjVertex, explored, ignoreVertex, rng));
 					edgesUsed.AddRange (RandomDFS (adjVertex, explored, ignoreVertex, rng));
 				}
 			}
@@ -144,4 +184,3 @@ namespace MazeGraph
 		}
 	}
 }
-

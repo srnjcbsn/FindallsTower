@@ -5,7 +5,7 @@ public class EnemyAI : MonoBehaviour {
 
     public float Force = 10;
     public int ThinkEveryXFrame = 10;    
-    public double VisionRange = 1.5;
+    public double VisionRange = 0;
     public float moveSpeed = 2.2f;
     public int rotationSpeed = 4; //speed of turning
     public bool WanderPackage = true;
@@ -18,10 +18,11 @@ public class EnemyAI : MonoBehaviour {
     private Transform lastKnownLocation;
     //private GameObject plane;
     private TiltPlane planescript;
+    private TileScript tilescript;
     private bool IsExecutingWander = false;
     private bool IsExecutingFollow = false;
     private MazeGraph.Point WanderTarget;
-    private Vector3 targetPosition;
+    private Vector3 targetPosition = new Vector3(-9999, -9999, -9999);
     private System.Random rng;
     private int WanderCounter = 0;
 
@@ -35,9 +36,17 @@ public class EnemyAI : MonoBehaviour {
         targetTransform = GameObject.FindWithTag("Player").transform; //target the player	
 
         //Gets access to functions in TiltPlane script
-        var other = GameObject.Find("Plane").GetComponent("TiltPlane");
-        planescript = (TiltPlane)other;
+        var plane = GameObject.Find("Plane").GetComponent("TiltPlane");
+        planescript = (TiltPlane)plane;
+        float x = 0, z = 0;
 
+        while (planescript.PlaneToMazeCoords(transform.position).GetType() == typeof(MazeGraph.WallTile))
+        {
+            Debug.Log("Enemy started on wall tile, repositioning.");
+            x += 0.1f;
+            z += 0.1f;
+            transform.Translate(x, 1, z);
+        }
 
         rng = new System.Random();
 	}
@@ -45,36 +54,47 @@ public class EnemyAI : MonoBehaviour {
     void Update()
     {
         if (targetPosition == myTransform.position)
-            IsExecutingWander = false;
+                IsExecutingWander = false;
         if (IsExecutingWander)
         {
             Wander();
             return;
         }
 
-
         GameObject target = GameObject.FindGameObjectsWithTag("Player")[0];
-
-        if (!IsExecutingFollow)
-        {
-            if (StraightRoadExists(planescript.PlaneToMazeCoords(myTransform.position), planescript.PlaneToMazeCoords(target.transform.position)))
-                target = null;
-            //Checks if player is within enemy vision range
-            if (System.Math.Abs(System.Math.Abs(target.transform.localPosition.x) - System.Math.Abs(this.transform.localPosition.x)) > VisionRange || 
-                System.Math.Abs(System.Math.Abs(target.transform.localPosition.z) - System.Math.Abs(this.transform.localPosition.z)) > VisionRange)
-                target = null;
-        }
+        MazeGraph.Point targetPoint = planescript.PlaneToMazeCoords(target.transform.position);
         
-        if (target != null)
+        //Debug.Log("" + planescript.PlaneToMazeCoords(target.transform.localPosition));
+
+        if (planescript.GetTileOfPoint(targetPoint).GetType() != typeof(MazeGraph.WallTile))
         {
-            //If player is within range and enemy has FollowPackage enabled, execute follow
-            if (FollowPackage)
+            if (!IsExecutingFollow)
             {
-                Follow();
-                return;
+                Debug.Log("Can try to see player");
+                //Checks if a straightline exists to the player (aka the enemy have LoS to the player) 
+                if (!StraightRoadExists(planescript.PlaneToMazeCoords(myTransform.position), targetPoint))
+                    target = null;
+                //Checks if player is within enemy vision range
+                if (target != null)
+                {
+                    if (System.Math.Abs(System.Math.Abs(target.transform.localPosition.x) - System.Math.Abs(myTransform.localPosition.x)) > VisionRange ||
+                        System.Math.Abs(System.Math.Abs(target.transform.localPosition.z) - System.Math.Abs(myTransform.localPosition.z)) > VisionRange)
+                        target = null;
+                }
+            }
+            //Debug.Log("" + System.Math.Abs(System.Math.Abs(target.transform.localPosition.x) - System.Math.Abs(myTransform.localPosition.x)));
+            //Debug.Log("" + System.Math.Abs(System.Math.Abs(target.transform.localPosition.z) - System.Math.Abs(myTransform.localPosition.z)));
+            if (target != null)
+            {
+                //If player is within range and enemy has FollowPackage enabled, execute follow
+                if (FollowPackage)
+                {
+                    Follow();
+                    return;
+                }
             }
         }
-        
+
         //Checks if the enemy is allowed to think
         counter++;
         if (counter % ThinkEveryXFrame != 0)
@@ -91,22 +111,29 @@ public class EnemyAI : MonoBehaviour {
     void Wander()
 	{
         IsExecutingFollow = false;
-        //Debug.Log("Wander");  
+        Debug.Log("Wander");  
         if (!IsExecutingWander)
         {
             float directionX, directionZ;
+            int negX, negZ;
             bool targetPosIsNotValid = true;
 
             //Gets a random position that is not a wall and doesn't require going through walls
             while (targetPosIsNotValid)
-            {
-                directionX = (rng.Next(-35, 36) / 10);
-                directionZ = (rng.Next(-35, 36) / 10);
-                targetPosition = new Vector3(myTransform.position.x + directionX, myTransform.position.y, myTransform.position.z + directionZ);
+            {                
+                directionX = (float)(rng.NextDouble());
+                directionZ = (float)(rng.NextDouble());
+                negX = rng.Next(-1, 2);
+                negZ = rng.Next(-1, 2);
+                targetPosition = new Vector3(myTransform.position.x + (negX * directionX), myTransform.position.y, myTransform.position.z + (negZ * directionZ));
                 WanderTarget = planescript.PlaneToMazeCoords(targetPosition);
-                if (planescript.GetTileOfPoint(WanderTarget).GetType() != typeof(MazeGraph.WallTile)
-                    && StraightRoadExists(planescript.PlaneToMazeCoords(myTransform.position), WanderTarget))
-                    targetPosIsNotValid = false;
+                Debug.Log("Looping..." + WanderTarget + " " + planescript.PlaneToMazeCoords(myTransform.position));
+                if (planescript.GetTileOfPoint(WanderTarget).GetType() != typeof(MazeGraph.WallTile))
+                {
+                    Debug.Log("target not wall");
+                    if (StraightRoadExists(planescript.PlaneToMazeCoords(myTransform.position), WanderTarget))
+                        targetPosIsNotValid = false;
+                }
             }
             targetPosition = planescript.MazeToPlaneCoords(WanderTarget);
 
@@ -128,7 +155,7 @@ public class EnemyAI : MonoBehaviour {
         myTransform.rotation = Quaternion.Slerp(myTransform.rotation, rot, 5f * Time.deltaTime);        
         
 
-        //move towards the player
+        //move towards the target
         myTransform.position += myTransform.forward * (moveSpeed / 2) * Time.deltaTime;
 
         //if no success in reaching target after 100 frames, abort the wander target
@@ -140,6 +167,7 @@ public class EnemyAI : MonoBehaviour {
 
     void Follow()
     {
+        //aqcuire a target if not already following a target
         if (!IsExecutingFollow)
         {
             targetPosition = new Vector3(targetTransform.position.x, myTransform.position.y, targetTransform.position.z);
@@ -149,7 +177,7 @@ public class EnemyAI : MonoBehaviour {
         else
             targetPosition = new Vector3(lastKnownLocation.position.x, myTransform.position.y, lastKnownLocation.position.z);
 
-        //Debug.Log("Follow: "+targetPosition);
+        Debug.Log("Follow: "+targetPosition);
 
         if (planescript.PlaneToMazeCoords(targetPosition).X == planescript.PlaneToMazeCoords(myTransform.position).X &&
             planescript.PlaneToMazeCoords(targetPosition).Y == planescript.PlaneToMazeCoords(myTransform.position).Y)
@@ -172,11 +200,11 @@ public class EnemyAI : MonoBehaviour {
         myTransform.position += myTransform.forward * moveSpeed * Time.deltaTime;
     }
 
-    void OnCollisonEnter(Collision collison)
-    {
-        if (collison.gameObject.tag.Equals("Wall"))
-            IsExecutingWander = false;
-    }
+    //void OnCollisonEnter(Collision collison)
+    //{
+    //    if (collison.gameObject.tag.Equals("Wall"))
+    //        IsExecutingWander = false;
+    //}
 
     bool CheckIfTooCloseToTarget(Vector3 targetPosition, double precision)
     {
@@ -214,7 +242,7 @@ public class EnemyAI : MonoBehaviour {
 
         if (xDif > 0 && yDif > 0)
             return false;
-
-        return planescript.GetTileOfPoint(myPos).TileIsWithinX(xDif + yDif, planescript.GetTileOfPoint(targetPos));
+        Debug.Log("only xDif or yDif is larger than 0. Sum is: " + (xDif + yDif) + " target/my-pos x/y: " + targetPos.X + " " + targetPos.Y + " " + myPos.X + " " + myPos.Y);
+        return planescript.AreTilesWithinRange(planescript.GetTileOfPoint(myPos), planescript.GetTileOfPoint(targetPos), xDif + yDif);
     }
 }

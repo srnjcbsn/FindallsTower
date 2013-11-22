@@ -4,7 +4,7 @@ namespace MazeGraph
 {
 	public class WallTile : Tile
 	{
-		public WallTile ()
+		public WallTile (Point pos) : base (pos)
 		{
 		}
 	}
