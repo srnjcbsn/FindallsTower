@@ -6,8 +6,8 @@ public class ItemPickup : MonoBehaviour
     ItemType type;
     public Item item;
 
-    public int level = 1;
-    public int offset = 2;
+    private static int level = Game.DungeonLevel;
+    private static int offset = level + 1;
 
 	// Use this for initialization
 	void Start () 
@@ -63,7 +63,8 @@ public class ItemPickup : MonoBehaviour
         Debug.Log("Colission");
         if (col.gameObject.name == "Player")
         {
-            Player.ItemPickup(item);
+            Game.ItemPickup();
+            PlayerStats.ItemPickup(item);
             gameObject.SetActive(false);
         }
 

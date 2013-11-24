@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerStats : MonoBehaviour 
+public class StatsUI : MonoBehaviour 
 {
     private static int maxHealth;
     public static int MaxHealth { get { return maxHealth; } set { maxHealth = value; } }
@@ -35,14 +35,14 @@ public class PlayerStats : MonoBehaviour
 	void Update () 
     {
         
-        currentHealth = Player.CurrentHealth;
-        maxHealth = Player.MaxHealth;
-        defense = Player.Defense;
-        effectiveAttack = Player.EffectiveAttack;
-        armor = Player.Armor;
-        weapon = Player.Weapon;
-        pickup = Player.Pickup;
-        debuff = Player.Debuff;
+        currentHealth = PlayerStats.CurrentHealth;
+        maxHealth = PlayerStats.MaxHealth;
+        defense = PlayerStats.Defense;
+        effectiveAttack = PlayerStats.Attack;
+        armor = PlayerStats.Armor;
+        weapon = PlayerStats.Weapon;
+        pickup = PlayerStats.Pickup;
+        debuff = PlayerStats.Debuff;
        
 
         if (currentHealth <= 0)

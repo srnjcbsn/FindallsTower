@@ -3,7 +3,7 @@ using System.Collections;
 
 
 
-public class Player : MonoBehaviour {
+public class PlayerStats : MonoBehaviour {
 
     private static int maxHealth;
     public static int MaxHealth { get { return maxHealth; } set { maxHealth = value;} }
@@ -14,11 +14,8 @@ public class Player : MonoBehaviour {
     private static int defense;
     public static int Defense { get { return defense; } set { defense = value; } }
 
-    private static int baseAttack;
-    public static int BaseAttack { get { return baseAttack; } set { baseAttack = value; } }
-
-    private static int effectiveAttack;
-    public static int EffectiveAttack { get { return effectiveAttack; } set { effectiveAttack = value; } }
+    private static int attack;
+    public static int Attack { get { return attack; } set { attack = value; } }
 	
 	public int visionRange;
 
@@ -76,9 +73,8 @@ public class Player : MonoBehaviour {
     {
         maxHealth = 4;
         currentHealth = maxHealth;
-        defense = 0;
-        baseAttack = 1;
-        effectiveAttack = baseAttack;
+        defense = 0;        
+        attack = 1;
     }
 	
 	// Update is called once per frame
@@ -98,14 +94,15 @@ public class Player : MonoBehaviour {
         switch (item.type)
         {
             case ItemType.HealthGlobe:
-                CurrentHealth += item.StatsAffected[0];
-                if (currentHealth > maxHealth)
-                    currentHealth = maxHealth;
+                
                 if (debuff != null)
                 {
                     UnEquip(debuff);
                     debuff = null;
                 }
+                CurrentHealth += item.StatsAffected[0];
+                if (currentHealth > maxHealth)
+                    currentHealth = maxHealth;
                 break;
             case ItemType.Buff:
                 if (pickup != null)
@@ -201,7 +198,7 @@ public class Player : MonoBehaviour {
         if (currentHealth < 0)
             Dead();
 
-        return effectiveAttack;
+        return attack;
     }
 
     //Adds or subtracts values from the stat(s) affected by a current item
@@ -231,9 +228,9 @@ public class Player : MonoBehaviour {
                         defense += item.StatsAffected[i];
                         break;
                     case 3:
-                        effectiveAttack += item.StatsAffected[i];
-                        if (effectiveAttack < 1)
-                            effectiveAttack = 1;
+                        attack += item.StatsAffected[i];
+                        if (attack < 1)
+                            attack = 1;
                         break;
                     default:
                         break;
@@ -266,7 +263,7 @@ public class Player : MonoBehaviour {
                         defense -= item.StatsAffected[i];
                         break;
                     case 3:
-                        effectiveAttack -= item.StatsAffected[i];
+                        attack -= item.StatsAffected[i];
                         break;
                     default:
                         break;
@@ -274,6 +271,15 @@ public class Player : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public static void LevelUp(int level)
+    {
+        level--;
+        maxHealth++;
+        currentHealth = maxHealth;
+        attack += (int)System.Math.Floor(level/2.0);
+        defense += (int)System.Math.Floor(level / 3.0);
     }
 
     private static void Dead()
