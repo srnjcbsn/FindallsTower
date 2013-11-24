@@ -23,18 +23,12 @@ public class PlayerStats : MonoBehaviour
     string armor = "No armor";
     string weapon = "No weapon";
     string pickup = "Nothing";
+    string debuff = "Nothing";
 
 	// Use this for initialization
 	void Start () 
     {
-        health = currentHealth + "/" + maxHealth;
-        stats = "Health: " + health + "\n\n";
-        stats += "Armor: " + defense + "\n\n";
-        stats += "Attack: " + effectiveAttack + "\n\n";
-        stats += "\n\n\n\n\n\n";
-        stats += "Wearing: " + armor + "\n\n";
-        stats += "Wielding: " + weapon + "\n\n";
-        stats += "Affected by: " + pickup + "\n\n";
+        UpdateStats();
 	}
 	
 	// Update is called once per frame
@@ -48,6 +42,7 @@ public class PlayerStats : MonoBehaviour
         armor = Player.Armor;
         weapon = Player.Weapon;
         pickup = Player.Pickup;
+        debuff = Player.Debuff;
        
 
         if (currentHealth <= 0)
@@ -56,18 +51,24 @@ public class PlayerStats : MonoBehaviour
         }
         else
 	    {
-            health = currentHealth + "/" + maxHealth;
-            stats = "Health: " + health + "\n\n";
-            stats += "Armor: " + defense + "\n\n";
-            stats += "Attack: " + effectiveAttack + "\n\n";
-            stats += "\n\n\n\n\n\n";
-            stats += "Wearing: " + armor + "\n\n";
-            stats += "Wielding: " + weapon + "\n\n";
-            stats += "Affected by: " + pickup + "\n\n";
+            UpdateStats();
 	    }
 
         
 	}
+
+    private void UpdateStats()
+    {
+        health = currentHealth + "/" + maxHealth;
+        stats = "Health: " + health + "\n\n";
+        stats += "Armor: " + defense + "\n\n";
+        stats += "Attack: " + effectiveAttack + "\n\n";
+        stats += "\n\n\n\n\n\n";
+        stats += "Wearing: " + armor + "\n\n";
+        stats += "Wielding: " + weapon + "\n\n";
+        stats += "Affected by: " + pickup + "\n\n";
+        stats += "Afflicted by: " + debuff + "\n\n";
+    }
 
     void OnGUI()
     { 

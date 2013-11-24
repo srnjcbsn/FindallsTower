@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HealthGlobe : Item 
+public class HealthGlobe
 {
     
     //0: affectsCurrentHealth
@@ -9,12 +9,12 @@ public class HealthGlobe : Item
     //2: affectsDefense
     //3: affectsAttack
     
-    public HealthGlobe(int level, int offset, string descr)
-    {
-        description = descr;
+    //public HealthGlobe(int level, int offset, string descr)
+    //{
+    //    description = descr;
 
-        //Determine amount healed
-        int r = Random.Range(level, level + offset);
-        statsAffected[0] = r;
-    }
+    //    //Determine amount healed
+    //    int r = Random.Range(level, level + offset);
+    //    statsAffected[0] = r;
+    //}
 }
