@@ -6,6 +6,9 @@ public class Enemy : MonoBehaviour
     int health;
     int defense;
     int attack;
+	private Transform currentTile;
+	
+	public Transform CurrentTile { get { return currentTile; } }
 
     static int level;
     static int offset;
@@ -26,11 +29,34 @@ public class Enemy : MonoBehaviour
     {
 	
 	}
+	
+	private void TileVisibilityChanged (object sender)
+	{
+		Debug.Log("Tile Visibility Changed");
+		if (currentTile.GetComponent<TileVisibility> ().IsVisible)
+			MakeOpaque();
+		else
+			MakeTransparent ();
+	}
 
     void OnCollisionEnter(Collision col)
-    {
-        //When colliding with player damage eachother.
-        Debug.Log("Enemy collision");
+    {	
+		if (col.gameObject.CompareTag ("Path"))
+		{
+			if (col.gameObject.GetComponent<TileVisibility> ().IsVisible)
+				MakeOpaque ();
+			else
+				MakeTransparent ();
+			
+			col.gameObject.GetComponent<TileVisibility> ().VisibilityChangedEvent += TileVisibilityChanged;
+			
+			if (currentTile != null)
+				currentTile.GetComponent<TileVisibility> ().VisibilityChangedEvent -= TileVisibilityChanged;
+			
+			currentTile = col.transform;
+		}
+		
+		//When colliding with player damage eachother.
         if (col.gameObject.name == "Player")
         {
             Debug.Log("Enemy collides with player");
@@ -43,6 +69,20 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+	
+	private void MakeTransparent ()
+	{
+		Debug.Log ("make transparent");
+		Color thisColor = renderer.material.color;
+		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 0f);
+	}
+	
+	private void MakeOpaque ()
+	{	
+		Debug.Log ("make opaque");
+		Color thisColor = renderer.material.color;
+		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 1f);
+	}
 
     bool FightPlayer(int playerAttack)
     {
