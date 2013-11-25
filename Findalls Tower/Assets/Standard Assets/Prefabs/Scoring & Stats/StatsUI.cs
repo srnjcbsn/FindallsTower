@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerStats : MonoBehaviour 
+public class StatsUI : MonoBehaviour 
 {
     private static int maxHealth;
     public static int MaxHealth { get { return maxHealth; } set { maxHealth = value; } }
@@ -23,9 +23,41 @@ public class PlayerStats : MonoBehaviour
     string armor = "No armor";
     string weapon = "No weapon";
     string pickup = "Nothing";
+    string debuff = "Nothing";
 
 	// Use this for initialization
 	void Start () 
+    {
+        UpdateStats();
+	}
+	
+	// Update is called once per frame
+	void Update () 
+    {
+        
+        currentHealth = PlayerStats.CurrentHealth;
+        maxHealth = PlayerStats.MaxHealth;
+        defense = PlayerStats.Defense;
+        effectiveAttack = PlayerStats.Attack;
+        armor = PlayerStats.Armor;
+        weapon = PlayerStats.Weapon;
+        pickup = PlayerStats.Pickup;
+        debuff = PlayerStats.Debuff;
+       
+
+        if (currentHealth <= 0)
+        {
+            stats = "GAME OVER!";
+        }
+        else
+	    {
+            UpdateStats();
+	    }
+
+        
+	}
+
+    private void UpdateStats()
     {
         health = currentHealth + "/" + maxHealth;
         stats = "Health: " + health + "\n\n";
@@ -35,39 +67,8 @@ public class PlayerStats : MonoBehaviour
         stats += "Wearing: " + armor + "\n\n";
         stats += "Wielding: " + weapon + "\n\n";
         stats += "Affected by: " + pickup + "\n\n";
-	}
-	
-	// Update is called once per frame
-	void Update () 
-    {
-        
-        currentHealth = Player.CurrentHealth;
-        maxHealth = Player.MaxHealth;
-        defense = Player.Defense;
-        effectiveAttack = Player.EffectiveAttack;
-        armor = Player.Armor;
-        weapon = Player.Weapon;
-        pickup = Player.Pickup;
-       
-
-        if (currentHealth <= 0)
-        {
-            stats = "GAME OVER!";
-        }
-        else
-	    {
-            health = currentHealth + "/" + maxHealth;
-            stats = "Health: " + health + "\n\n";
-            stats += "Armor: " + defense + "\n\n";
-            stats += "Attack: " + effectiveAttack + "\n\n";
-            stats += "\n\n\n\n\n\n";
-            stats += "Wearing: " + armor + "\n\n";
-            stats += "Wielding: " + weapon + "\n\n";
-            stats += "Affected by: " + pickup + "\n\n";
-	    }
-
-        
-	}
+        stats += "Afflicted by: " + debuff + "\n\n";
+    }
 
     void OnGUI()
     { 

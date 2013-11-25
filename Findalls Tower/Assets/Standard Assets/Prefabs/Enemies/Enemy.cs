@@ -7,14 +7,14 @@ public class Enemy : MonoBehaviour
     int defense;
     int attack;
 
-    int level;
-    int offset;
+    static int level;
+    static int offset;
 
 	// Use this for initialization
 	void Start () 
     {
-        level = 1;
-        offset = 1;
+        level = Game.DungeonLevel;
+        offset = level;
 
         health = Random.Range(level, level + offset + 1);
         defense = 0;
@@ -27,21 +27,22 @@ public class Enemy : MonoBehaviour
 	
 	}
 
-    //void OnCollisionEnter(Collision col)
-    //{
-    //    //When colliding with player damage eachother.
-    //    Debug.Log("Enemy collision");
-    //    if (col.gameObject.name == "Player")
-    //    {
-    //        Debug.Log("Enemy collides with player");
-    //        int playerAttack = Player.FightEnemy(attack);
-    //        //Check to see if the enemy dies
-    //        if (FightPlayer(playerAttack))
-    //        {
-    //            Dead();
-    //        }
-    //    }
-    //}
+    void OnCollisionEnter(Collision col)
+    {
+        //When colliding with player damage eachother.
+        Debug.Log("Enemy collision");
+        if (col.gameObject.name == "Player")
+        {
+            Debug.Log("Enemy collides with player");
+            int playerAttack = PlayerStats.FightEnemy(attack);
+            //Check to see if the enemy dies
+            if (FightPlayer(playerAttack))
+            {
+                Game.EnemyKilled();
+                Dead();
+            }
+        }
+    }
 
     bool FightPlayer(int playerAttack)
     {

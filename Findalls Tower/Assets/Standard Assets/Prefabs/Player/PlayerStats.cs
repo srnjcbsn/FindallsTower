@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour {
+
+
+public class PlayerStats : MonoBehaviour {
 
     private static int maxHealth;
     public static int MaxHealth { get { return maxHealth; } set { maxHealth = value;} }
@@ -12,11 +14,8 @@ public class Player : MonoBehaviour {
     private static int defense;
     public static int Defense { get { return defense; } set { defense = value; } }
 
-    private static int baseAttack;
-    public static int BaseAttack { get { return baseAttack; } set { baseAttack = value; } }
-
-    private static int effectiveAttack;
-    public static int EffectiveAttack { get { return effectiveAttack; } set { effectiveAttack = value; } }
+    private static int attack;
+    public static int Attack { get { return attack; } set { attack = value; } }
 	
 	public int visionRange;
 
@@ -56,15 +55,26 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private static Item debuff;
+    public static string Debuff
+    {
+        get
+        {
+            if (debuff != null)
+                return debuff.description;
+            else
+                return "Nothing";
+        }
+    }
+
 
 	// Use this for initialization
 	void Start () 
     {
         maxHealth = 4;
         currentHealth = maxHealth;
-        defense = 0;
-        baseAttack = 1;
-        effectiveAttack = baseAttack;
+        defense = 0;        
+        attack = 1;
     }
 	
 	// Update is called once per frame
@@ -81,30 +91,103 @@ public class Player : MonoBehaviour {
         //2: affectsDefense
         //3: affectsAttack
 
-        Debug.Log("Item pickup");
-        Debug.Log("Value healed: " + item.StatsAffected[0]);
+        switch (item.type)
+        {
+            case ItemType.HealthGlobe:
+                
+                if (debuff != null)
+                {
+                    UnEquip(debuff);
+                    debuff = null;
+                }
+                CurrentHealth += item.StatsAffected[0];
+                if (currentHealth > maxHealth)
+                    currentHealth = maxHealth;
+                break;
+            case ItemType.Buff:
+                if (pickup != null)
+                {
+                    UnEquip(pickup);
+                    pickup = null;
+                }
+                pickup = item;
+                Equip(item);
+                break;
+            case ItemType.Armor:
+                if (armor != null)
+                {
+                    UnEquip(armor);
+                    armor = null;
+                }
+                armor = item;
+                Equip(item);
+                break;
+            case ItemType.Weapon:
+                if (weapon != null)
+                {
+                    UnEquip(weapon);
+                    weapon = null;
+                }
+                weapon = item;
+                Equip(item);
+                break;
+            case ItemType.Debuff:
+                if (debuff != null)
+                {
+                    UnEquip(debuff);
+                    debuff = null;
+                }
+                debuff = item;
+                Equip(item);
+                break;
+            default:
+                break;
 
-        //Heals player - one time effect
-        if (item.GetType() == typeof(HealthGlobe))
-        {
-            CurrentHealth += item.StatsAffected[0];
-            if (currentHealth > maxHealth)
-                currentHealth = maxHealth;
+        }  
+
+
+
+        ////Heals player - one time effect
+        //if (item.GetType() == typeof(HealthGlobe))
+        //{
+        //    CurrentHealth += item.StatsAffected[0];
+        //    if (currentHealth > maxHealth)
+        //        currentHealth = maxHealth;
             
-            Debug.Log("Player health: " + CurrentHealth);
-            return;
-        }
-        //Buffs/debuffs player - effect is equipped and stays on
-        else if (item.GetType() == typeof(Buff))
-        {
-            if (pickup != null)
-            {
-                UnEquip(pickup);
-                pickup = null;
-            }
-            pickup = item;
-            Equip(item);
-        }
+        //    Debug.Log("Player health: " + CurrentHealth);
+        //    return;
+        //}
+        ////Buffs/debuffs player - effect is equipped and stays on
+        //else if (item.GetType() == typeof(Buff))
+        //{
+        //    if (pickup != null)
+        //    {
+        //        UnEquip(pickup);
+        //        pickup = null;
+        //    }
+        //    pickup = item;
+        //    Equip(item);
+        //}
+        //else if (item.GetType() == typeof(Armor))
+        //{
+        //    if (armor != null)
+        //    {
+        //        UnEquip(armor);
+        //        armor = null;
+        //    }
+        //    armor = item;
+        //    Equip(item);
+        //}
+        //else if (item.GetType() == typeof(Weapon))
+        //{
+        //    if (weapon != null)
+        //    {
+        //        UnEquip(weapon);
+        //        weapon = null;
+        //    }
+        //    weapon = item;
+        //    Equip(item);
+        //}
     }
 
     //Applies damage from an enemy and returns the players current attack to damage the enemy
@@ -115,7 +198,7 @@ public class Player : MonoBehaviour {
         if (currentHealth < 0)
             Dead();
 
-        return effectiveAttack;
+        return attack;
     }
 
     //Adds or subtracts values from the stat(s) affected by a current item
@@ -126,7 +209,7 @@ public class Player : MonoBehaviour {
         //2: affectsDefense
         //3: affectsAttack
 
-        for (int i = 0; i < item.StatsAffected.Length; i++)
+        for (int i = 1; i < item.StatsAffected.Length; i++)
         {
             if (item.StatsAffected[i] != 0)
             {
@@ -145,9 +228,9 @@ public class Player : MonoBehaviour {
                         defense += item.StatsAffected[i];
                         break;
                     case 3:
-                        effectiveAttack += item.StatsAffected[i];
-                        if (effectiveAttack < 1)
-                            effectiveAttack = 1;
+                        attack += item.StatsAffected[i];
+                        if (attack < 1)
+                            attack = 1;
                         break;
                     default:
                         break;
@@ -180,7 +263,7 @@ public class Player : MonoBehaviour {
                         defense -= item.StatsAffected[i];
                         break;
                     case 3:
-                        effectiveAttack -= item.StatsAffected[i];
+                        attack -= item.StatsAffected[i];
                         break;
                     default:
                         break;
@@ -188,6 +271,15 @@ public class Player : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public static void LevelUp(int level)
+    {
+        level--;
+        maxHealth++;
+        currentHealth = maxHealth;
+        attack += (int)System.Math.Floor(level/2.0);
+        defense += (int)System.Math.Floor(level / 3.0);
     }
 
     private static void Dead()
