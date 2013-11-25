@@ -14,6 +14,7 @@ public class TiltPlane : MonoBehaviour
 	
 	private Maze maze;
 	private float scale;
+	private Dictionary<GameObject, HashSet<Tile>> tilesRevealedBy;
 	
 	public Maze Maze {
 		get { return maze; } 
@@ -24,46 +25,47 @@ public class TiltPlane : MonoBehaviour
 	void Start () 
 	{
 		tileDict = new Dictionary<Tile, Transform> ();
+		tilesRevealedBy = new Dictionary<GameObject, HashSet<Tile>> ();
+		
 		maze = new Maze (mazeSize, additionalPaths);
         scale = 10f / mazeSize;
-        Transform tileTransform = null;
 
 		foreach (Point pos in maze.AllPoints())
 		{
+			
+       		Transform tileTransform = null;
 			Tile tile = maze[pos];
 			
 			if (tile.GetType() == typeof(WallTile))
 			{
 				tileTransform = GenerateTile (WallPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale, scale));
-				tileTransform.gameObject.layer = LayerMask.NameToLayer ("WallsHid");
-				
-//				tscript = thistile.GetComponent<TileScript> ();
-//				tscript.Model = tile;
-                tileTransform.gameObject.tag = "Wall";
+				tileTransform.gameObject.layer = LayerMask.NameToLayer ("Hidden");
 			}
 			
 			if (tile.GetType() == typeof(Tile))
 			{
 				tileTransform = GenerateTile (PathPrefab, MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
-				tileTransform.gameObject.layer = LayerMask.NameToLayer ("FloorVis");
+				tileTransform.gameObject.layer = LayerMask.NameToLayer ("Hidden");
 				
 				
 				TileScript tscript = tileTransform.GetComponent<TileScript> ();
 				tscript.Model = tile;
+				tscript.plane = this;
 			}
 			
 			tileDict.Add(tile, tileTransform);
 		}		
 		
+		Transform tileTransform2;
 		// generate outer walls
-        tileTransform = GenerateTile(WallPrefab, new Vector3(0, scale / 2, -5 - (scale / 2)), new Vector3(10, scale, scale));   // South wall
-        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
-        tileTransform = GenerateTile(WallPrefab, new Vector3(0, scale / 2, 5 + (scale / 2)), new Vector3(10, scale, scale));    // North wall
-        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
-        tileTransform = GenerateTile(WallPrefab, new Vector3(5 + (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));   // East Wall
-        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
-        tileTransform = GenerateTile(WallPrefab, new Vector3(-5 - (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));  // West Wall
-        tileTransform.gameObject.layer = LayerMask.NameToLayer("WallsHid");
+        tileTransform2 = GenerateTile(WallPrefab, new Vector3(0, scale / 2, -5 - (scale / 2)), new Vector3(10, scale, scale));   // South wall
+        tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
+        tileTransform2 = GenerateTile(WallPrefab, new Vector3(0, scale / 2, 5 + (scale / 2)), new Vector3(10, scale, scale));    // North wall
+        tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
+        tileTransform2 = GenerateTile(WallPrefab, new Vector3(5 + (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));   // East Wall
+        tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
+        tileTransform2 = GenerateTile(WallPrefab, new Vector3(-5 - (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));  // West Wall
+        tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
     }
 
 	
@@ -110,15 +112,64 @@ public class TiltPlane : MonoBehaviour
 		return maze.AreTilesWithinRange(t1, t2, range);
 	}
 	
-	public void LightTilesInRange (Tile fromTile, int range)
+	public void RevealTilesInStraightPath (GameObject revealer, Tile fromTile, int range)
+	{
+		HashSet<Tile> revealed = new HashSet<Tile> ();
+		
+		foreach (Tile tile in TilesInPathWithWalls (fromTile, range))
+		{
+			tileDict[tile].GetComponent<TileVisibility> ().Reveal (revealer);
+			revealed.Add (tile);
+		}
+		
+		tilesRevealedBy.Add (revealer, revealed);
+	}
+	
+	public void HideTilesRevealedBy (GameObject hider)
+	{
+		if (!tilesRevealedBy.ContainsKey (hider))
+			return;
+		
+		foreach (Tile tile in tilesRevealedBy[hider])
+			tileDict[tile].GetComponent<TileVisibility> ().Hide (hider);
+		
+		tilesRevealedBy.Remove(hider);
+	}
+	
+	private IEnumerable<Tile> TilesInPathWithWalls (Tile fromTile, int range)
 	{
 		HashSet<Vertex> vertices = new HashSet<Vertex> ();
-		maze.MazeGraph.DFSTraversal (maze.MazeGraph[fromTile.Position], vertices, (vert => TileInRange (fromTile.Position, vert.Position, range)));
+		
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (1, 0), range));
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (0, 1), range));
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (-1, 0), range));
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (0, -1), range));
 		
 		foreach (Vertex vertex in vertices)
 		{
-			Tile tile = vertex.Content;
-			tileDict[tile].gameObject.layer = LayerMask.NameToLayer("FloorVis");
+			yield return vertex.Content;
+			foreach (Vertex adjWall in vertex.Adjacent.Where (vert => vert.Content.GetType () == typeof(WallTile)))
+				yield return adjWall.Content;
+		}
+	}
+		
+	private IEnumerable<Vertex> VerticesInPath (Tile fromTile, Point direction, int range)
+	{
+		
+		for (int i = 0; i < range; i++)
+		{
+			Point newPoint = fromTile.Position + new Point (direction.X * i, direction.Y * i);
+			
+			int max = maze.Dimension;
+			if (newPoint.X >= max || newPoint.X < 0 || newPoint.Y >= max || newPoint.Y < 0)
+				break; // handle this in maze[Point] property
+			
+			Vertex newVertex = maze.MazeGraph [newPoint];
+			
+			if (newVertex.Content.GetType() == typeof (WallTile))
+				break;
+			
+			yield return newVertex;
 		}
 	}
 	
@@ -132,6 +183,7 @@ public class TiltPlane : MonoBehaviour
 	{
         if (disableTilting)
             return;
+			
         Vector3 currentRotation = transform.localEulerAngles;
         float minAngle = 360 - maxAngle;
 
