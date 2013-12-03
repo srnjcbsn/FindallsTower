@@ -16,7 +16,7 @@ public class EnemyAI : MonoBehaviour {
     private Transform myTransform;
     private Vector3 lastKnownLocation;
     //private GameObject plane;
-    private TiltPlane planescript;
+    private PlaneScript planescript;
     private TileScript tilescript;
     private bool IsExecutingWander = false;
     private bool IsExecutingFollow = false;
@@ -35,8 +35,8 @@ public class EnemyAI : MonoBehaviour {
         targetTransform = GameObject.FindWithTag("Player").transform; //target the player	
 
         //Gets access to functions in TiltPlane script
-        var plane = GameObject.Find("Plane").GetComponent("TiltPlane");
-        planescript = (TiltPlane)plane;
+        var plane = GameObject.Find("Plane").GetComponent("PlaneScript");
+        planescript = (PlaneScript)plane;
         float x = 0, z = 0;
 
         while (planescript.PlaneToMazeCoords(transform.position).GetType() == typeof(MazeGraph.WallTile))

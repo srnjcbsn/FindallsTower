@@ -7,7 +7,7 @@ using System;
 public class TileScript : MonoBehaviour 
 {
 	public Tile Model;
-	public TiltPlane plane;
+	public PlaneScript planeScript;
 	public delegate void EnemyEnteredEventHandler (object sender, Transform enemyTransform);
 	public event EnemyEnteredEventHandler EnemyEntered;
 	
@@ -29,7 +29,7 @@ public class TileScript : MonoBehaviour
 	
 	public bool IsTileInWalkingRange (Tile other, int range)
 	{
-		return plane.AreTilesWithinRange(Model, other, range);
+		return planeScript.AreTilesWithinRange(Model, other, range);
 	}
 	
     void OnCollisionEnter (Collision collision)
@@ -37,11 +37,11 @@ public class TileScript : MonoBehaviour
 		
         Transform collidingTransform = collision.transform;
 		
-        if (collidingTransform.name == "Player")
+        if (collidingTransform.tag == "Player")
         {
-			int range = collidingTransform.GetComponent<PlayerStats> ().visionRange;
-			plane.HideTilesRevealedBy (collidingTransform.gameObject);
-			plane.RevealTilesInStraightPath (collidingTransform.gameObject, Model, range);
+			int range = planeScript.gameObject.GetComponent<PlayerStats> ().visionRange;
+			planeScript.HideTilesRevealedBy (collidingTransform.gameObject);
+			planeScript.RevealTilesInStraightPath (collidingTransform.gameObject, Model, range);
         }
 		
 		if (collidingTransform.name == "Enemy")
