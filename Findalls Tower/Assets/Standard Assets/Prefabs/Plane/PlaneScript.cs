@@ -8,6 +8,7 @@ public class PlaneScript : MonoBehaviour
 	public Transform WallPrefab;
 	public Transform PathPrefab;
 	public Transform PlayerPrefab;
+	public Transform EnemyPrefab;
 	public Transform EntryPrefab;
 	public Transform ExitPrefab;
 	public int mazeSize;

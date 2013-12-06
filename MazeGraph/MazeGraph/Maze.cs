@@ -100,7 +100,7 @@ namespace MazeGraph
 				return new WallTile (pos);
 		}
 
-		private Point RandomPointInPath ()
+		public Point RandomPointInPath ()
 		{
 			return new Point (rng.Next (0, size / 2) * 2, rng.Next (0, size / 2) * 2);
 		}
