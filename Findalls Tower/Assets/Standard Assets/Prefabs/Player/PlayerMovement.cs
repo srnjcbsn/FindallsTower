@@ -25,8 +25,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 infront = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z + 10);
 
-        myTransform.rotation = Quaternion.Slerp(myTransform.rotation,
-        Quaternion.LookRotation(infront - myTransform.position), rotationSpeed * Time.deltaTime);
+        //myTransform.rotation = Quaternion.Slerp(myTransform.rotation,
+        //Quaternion.LookRotation(infront - myTransform.position), rotationSpeed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.W))
         {

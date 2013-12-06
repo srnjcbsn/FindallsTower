@@ -9,6 +9,8 @@ public class MazeInitialization
 	public Transform wallPrefab;
 	public Transform pathPrefab;
 	public Transform playerPrefab;
+	public Transform entryPrefab;
+	public Transform exitPrefab;
 	
 	public int mazeSize;
 	public int additionalPaths;
@@ -22,7 +24,9 @@ public class MazeInitialization
 		( PlaneScript planeScript
 		, Transform wallPrefab 
 		, Transform pathPrefab 
-		, Transform playerPrefab 
+		, Transform playerPrefab
+		, Transform entryPrefab
+		, Transform exitPrefab
 		, int mazeSize 
 		, int additionalPaths
 		)
@@ -31,6 +35,8 @@ public class MazeInitialization
 		this.wallPrefab = wallPrefab;
 		this.pathPrefab = pathPrefab;
 		this.playerPrefab = playerPrefab;
+		this.entryPrefab = entryPrefab;
+		this.exitPrefab = exitPrefab;
 		this.mazeSize = mazeSize;
 		this.additionalPaths = additionalPaths;
 	}
@@ -51,20 +57,32 @@ public class MazeInitialization
 				tileTransform = GenerateTile (wallPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3 (scale, scale * 2f, scale));
 			}
 			
-			if (tile.GetType() == typeof(Tile))
+			else if (tile.GetType() == typeof(Tile))
 			{
-				tileTransform = GenerateTile (pathPrefab, planeScript.MazeToPlaneCoords(pos, -1f * scale /2f), new Vector3(scale, scale, scale));
+				Transform prefab = pathPrefab;
+				
+				if (tile.GetType() == typeof(EntryTile))
+				{
+					Debug.Log ("Entry position");
+					entryPosition = tile.Position;
+					prefab = entryPrefab;
+				}
+			
+				if (tile.GetType() == typeof(ExitTile))
+				{
+					exitPosition = tile.Position;
+					prefab = exitPrefab;
+				}
+				
+				tileTransform = GenerateTile (prefab, planeScript.MazeToPlaneCoords(pos, -1f * scale /2f), new Vector3(scale, scale, scale));
 				
 				TileScript tscript = tileTransform.GetComponent<TileScript> ();
+				Debug.Log(tscript);
 				tscript.Model = tile;
 				tscript.PlaneScript = planeScript;
 			}
 			
-			if (tile.GetType() == typeof(EntryTile))
-				entryPosition = tile.Position;
 			
-			if (tile.GetType() == typeof(ExitTile))
-				exitPosition = tile.Position;
 			
 			planeScript.tileDict.Add(tile, tileTransform);
 			tileTransform.gameObject.layer = LayerMask.NameToLayer ("Hidden");

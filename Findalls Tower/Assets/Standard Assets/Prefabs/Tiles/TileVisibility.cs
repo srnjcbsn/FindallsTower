@@ -16,9 +16,8 @@ public class TileVisibility : MonoBehaviour
 	private int visibleLayer; 
 	private int hiddenLayer; 
 	
-	void Start () 
+	void Awake () 
 	{
-		Debug.Log ("START");
 		visibilitySources = new HashSet<GameObject> ();
 		visibleLayer = LayerMask.NameToLayer ("Visible");
 		hiddenLayer = LayerMask.NameToLayer ("Hidden");
@@ -35,6 +34,7 @@ public class TileVisibility : MonoBehaviour
 	{
 		gameObject.layer = visibleLayer;
 		renderer.material = VisibleMat;
+		
 		visibilitySources.Add (revealer);
 		isVisible = true;
 		OnVisibilityChanged ();
@@ -42,6 +42,7 @@ public class TileVisibility : MonoBehaviour
 	
 	public void Hide (GameObject hider)
 	{
+		Debug.Log ("HIDE");
 		visibilitySources.Remove (hider);
 		
 		if (visibilitySources.Count == 0)

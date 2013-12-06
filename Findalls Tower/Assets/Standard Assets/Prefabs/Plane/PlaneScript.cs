@@ -8,6 +8,8 @@ public class PlaneScript : MonoBehaviour
 	public Transform WallPrefab;
 	public Transform PathPrefab;
 	public Transform PlayerPrefab;
+	public Transform EntryPrefab;
+	public Transform ExitPrefab;
 	public int mazeSize;
 	public int additionalPaths;
 	
@@ -32,6 +34,8 @@ public class PlaneScript : MonoBehaviour
 				WallPrefab, 
 				PathPrefab,
 				PlayerPrefab,
+				EntryPrefab,
+				ExitPrefab,
 				mazeSize, 
 				additionalPaths
 			);
