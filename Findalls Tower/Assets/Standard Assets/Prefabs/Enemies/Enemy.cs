@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
 
     static int level;
     static int offset;
-
+	
 	// Use this for initialization
 	void Start () 
     {
@@ -72,14 +72,12 @@ public class Enemy : MonoBehaviour
 	
 	private void MakeTransparent ()
 	{
-		Debug.Log ("make transparent");
-		Color thisColor = renderer.material.color;
-		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 0f);
+//		Color thisColor = renderer.material.color;
+//		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 0f);
 	}
 	
 	private void MakeOpaque ()
-	{	
-		Debug.Log ("make opaque");
+	{
 		Color thisColor = renderer.material.color;
 		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 1f);
 	}

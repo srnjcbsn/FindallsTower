@@ -113,7 +113,7 @@ public class MazeInitialization
 	public void PopulateMaze ()
 	{
 		System.Random rng = new System.Random ();
-		float yOffset = planeScript.unit / 3f;
+		float yOffset = planeScript.unit / 4f;
 		Vector3 unitScale = new Vector3 (planeScript.unit / 2f, planeScript.unit / 2f, planeScript.unit / 2f);
 		
 		HashSet<Point> usedTiles = new HashSet<Point> ();
