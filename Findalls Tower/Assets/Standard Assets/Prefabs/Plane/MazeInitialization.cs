@@ -57,7 +57,7 @@ public class MazeInitialization
 				tileTransform = GenerateTile (wallPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3 (scale, scale * 2f, scale));
 			}
 			
-			else if (tile.GetType() == typeof(Tile))
+			else if (tile is Tile)
 			{
 				Transform prefab = pathPrefab;
 				
@@ -81,8 +81,6 @@ public class MazeInitialization
 				tscript.Model = tile;
 				tscript.PlaneScript = planeScript;
 			}
-			
-			
 			
 			planeScript.tileDict.Add(tile, tileTransform);
 			tileTransform.gameObject.layer = LayerMask.NameToLayer ("Hidden");
@@ -114,10 +112,12 @@ public class MazeInitialization
 	
 	public void PopulateMaze ()
 	{
+		Debug.Log ("entry pos: " + entryPosition);
 		Transform player = (Transform) MonoBehaviour.Instantiate (playerPrefab);
 		player.parent = planeScript.transform;
-		player.position = planeScript.MazeToPlaneCoords (entryPosition);
-		player.position = new Vector3 (player.position.x, planeScript.unit, player.position.z);
+		player.localPosition = planeScript.MazeToPlaneCoords (entryPosition);
+		player.position = new Vector3 (player.position.x, planeScript.unit / 3f, player.position.z);
+		Debug.Log ("player pos: " + player.position);
 		player.localScale = new Vector3 (planeScript.unit / 2f, planeScript.unit / 2f, planeScript.unit / 2f);
 	}
 }

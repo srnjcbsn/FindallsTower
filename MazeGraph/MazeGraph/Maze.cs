@@ -38,7 +38,11 @@ namespace MazeGraph
 		{
 			this.size = dimension;
 			rng = new Random ();
-			GenerateRandomEntryExitPoints ();
+			entryPoint = RandomPointInPath ();
+			exitPoint = RandomPointInPath ();
+
+			while (entryPoint == exitPoint)
+				exitPoint = RandomPointInPath ();
 
 			Graph simpleGraph = new Graph ((dimension / 2) + 1, (pos => new Tile (pos)));
 
@@ -75,7 +79,14 @@ namespace MazeGraph
 		private Tile ConstructMaze (Graph simpleGraph, HashSet<Edge> pathEdges, Point pos)
 		{
 			if (pos.X % 2 == 0 && pos.Y % 2 == 0)
+			{
+				if (pos == entryPoint)
+					return new EntryTile (pos);
+				if (pos == exitPoint)
+					return new ExitTile (pos);
+
 				return new Tile (pos);
+			}
 
 			if (pos.X % 2 == 1 && pos.Y % 2 == 1)
 				return new WallTile (pos);
@@ -89,45 +100,14 @@ namespace MazeGraph
 				return new WallTile (pos);
 		}
 
-		private void GenerateRandomEntryExitPoints ()
+		private Point RandomPointInPath ()
 		{
-			Random rnd = new Random ();
-
-			entryPoint = RandomPointUpperLeftQuarter (rnd);
-			exitPoint = RandomPointUpperLeftQuarter (rnd);
-
-			if (rnd.Next (0, 1) == 1)
-				entryPoint = new Point (size - entryPoint.X - 1, entryPoint.Y);
-			else
-				exitPoint = new Point (size - exitPoint.X - 1, exitPoint.Y);
-
-			if (rnd.Next (0, 1) == 1)
-				entryPoint = new Point (entryPoint.X, size - entryPoint.Y - 1);
-			else
-				exitPoint = new Point (exitPoint.X, size - exitPoint.Y - 1);
-		}
-
-		private Tile RandomTile(Random rnd, Point position)
-		{
-			if (position == entryPoint || position == exitPoint)
-				return new Tile (position);
-
-			if (RandomBool (rnd))
-				return new Tile (position);
-			else
-				return new WallTile (position);
+			return new Point (rng.Next (0, size / 2) * 2, rng.Next (0, size / 2) * 2);
 		}
 
 		private bool RandomBool (Random rnd)
 		{
 			return (rnd.Next (0, 2) == 1);
-		}
-
-		private Point RandomPointUpperLeftQuarter (Random rnd)
-		{
-			int x = rnd.Next (0, size / 4);
-			int y = rnd.Next (0, size / 4);
-			return new Point (x, y);
 		}
 
 		public IEnumerable<Point> AllPoints ()

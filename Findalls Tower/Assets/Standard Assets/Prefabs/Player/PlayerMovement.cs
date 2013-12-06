@@ -17,13 +17,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-		Debug.Log ("START player");
         rigidbody.maxAngularVelocity = MaxVelocity;
     }
 	
 	void Update () 
     {
-        Vector3 infront = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z + 10);
+        //Vector3 infront = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z + 10);
 
         //myTransform.rotation = Quaternion.Slerp(myTransform.rotation,
         //Quaternion.LookRotation(infront - myTransform.position), rotationSpeed * Time.deltaTime);
@@ -53,8 +52,9 @@ public class PlayerMovement : MonoBehaviour
             rigidbody.isKinematic = !rigidbody.isKinematic;
         }
 
-        if (rigidbody.velocity.magnitude > MaxVelocity)
-            rigidbody.velocity = rigidbody.velocity.normalized * MaxVelocity;
-        //Debug.Log("vel: " + myTransform.rigidbody.velocity.magnitude);
+		if (rigidbody.velocity.magnitude > MaxVelocity)
+        	rigidbody.velocity = rigidbody.velocity.normalized * MaxVelocity;
+		
+        //Debug.Log("vel: " + myTransform.rigidbody.velocity);
 	}
 }

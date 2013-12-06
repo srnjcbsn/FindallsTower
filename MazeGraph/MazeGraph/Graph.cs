@@ -143,7 +143,7 @@ namespace MazeGraph
 				if (explored.Contains (adjVertex))
 					continue;
 
-				if (adjVertex < target)
+				if (adjVertex == target)
 				{
 					retList.Add (edge);
 					return retList;
