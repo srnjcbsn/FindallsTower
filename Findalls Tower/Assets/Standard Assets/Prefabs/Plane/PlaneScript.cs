@@ -12,7 +12,7 @@ public class PlaneScript : MonoBehaviour
 	public int additionalPaths;
 	
 	private Maze maze;
-	internal float scale;
+	internal float unit;
 	private Dictionary<GameObject, HashSet<Tile>> tilesRevealedBy;
 	public Dictionary<Tile, Transform> tileDict;
 	
@@ -22,7 +22,8 @@ public class PlaneScript : MonoBehaviour
 	
 	void Start () 
 	{
-		scale = 10f / mazeSize;
+		transform.localScale = new Vector3 (mazeSize, mazeSize, mazeSize);
+		unit = 10f / mazeSize;
 		tileDict = new Dictionary<Tile, Transform> ();
 		tilesRevealedBy = new Dictionary<GameObject, HashSet<Tile>> ();
 		MazeInitialization mazeInitializer = new MazeInitialization 
@@ -38,16 +39,21 @@ public class PlaneScript : MonoBehaviour
 		mazeInitializer.PopulateMaze ();
 	}
 	
-	public Vector3 MazeToPlaneCoords (Point mazeCoords)
+	public Vector3 MazeToPlaneCoords (Point mazeCoords, float yOffset)
 	{
 		int offset = 5;
 		
 		float scalefactor = (float)mazeSize / 10f;
 		
-		float planeX = (mazeCoords.X / scalefactor) - offset + scale / 2;
-		float planeY = (mazeCoords.Y / scalefactor) - offset + scale / 2;
+		float planeX = (mazeCoords.X / scalefactor) - offset + unit / 2;
+		float planeY = (mazeCoords.Y / scalefactor) - offset + unit / 2;
 		
-		return new Vector3(planeX, scale / 2, planeY);
+		return new Vector3(planeX, yOffset, planeY);
+	}
+	
+	public Vector3 MazeToPlaneCoords (Point mazeCoords)
+	{
+		return MazeToPlaneCoords (mazeCoords, 0f);
 	}
 	
 	public Point PlaneToMazeCoords (Vector3 planeCoords)

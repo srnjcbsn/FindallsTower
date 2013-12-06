@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using MazeGraph;
 
@@ -39,7 +39,7 @@ public class MazeInitialization
 	{	
 		maze = new Maze (mazeSize, additionalPaths);
         
-		float scale = planeScript.scale;
+		float scale = planeScript.unit;
 
 		foreach (Point pos in maze.AllPoints())
 		{	
@@ -48,16 +48,16 @@ public class MazeInitialization
 			
 			if (tile.GetType() == typeof(WallTile))
 			{
-				tileTransform = GenerateTile (wallPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3 (scale, scale, scale));
+				tileTransform = GenerateTile (wallPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3 (scale, scale * 2f, scale));
 			}
 			
 			if (tile.GetType() == typeof(Tile))
 			{
-				tileTransform = GenerateTile (pathPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3(scale, scale / 20f, scale));
+				tileTransform = GenerateTile (pathPrefab, planeScript.MazeToPlaneCoords(pos, -1f * scale /2f), new Vector3(scale, scale, scale));
 				
 				TileScript tscript = tileTransform.GetComponent<TileScript> ();
 				tscript.Model = tile;
-				tscript.planeScript = planeScript;
+				tscript.PlaneScript = planeScript;
 			}
 			
 			if (tile.GetType() == typeof(EntryTile))
@@ -99,6 +99,7 @@ public class MazeInitialization
 		Transform player = (Transform) MonoBehaviour.Instantiate (playerPrefab);
 		player.parent = planeScript.transform;
 		player.position = planeScript.MazeToPlaneCoords (entryPosition);
-		player.localScale = new Vector3 (.5f,.5f,.5f);
+		player.position = new Vector3 (player.position.x, planeScript.unit, player.position.z);
+		player.localScale = new Vector3 (planeScript.unit / 2f, planeScript.unit / 2f, planeScript.unit / 2f);
 	}
 }

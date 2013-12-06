@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+		Debug.Log ("START player");
         rigidbody.maxAngularVelocity = MaxVelocity;
     }
 	
@@ -30,22 +31,22 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             //rigidbody.AddForce(0f, 0f, force, ForceMode.Force);
-            myTransform.position += myTransform.forward * moveSpeed * Time.deltaTime;
+            myTransform.localPosition += Vector3.forward * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.S))
         {
             //rigidbody.AddForce(0f, 0f, -force, ForceMode.Force);
-            myTransform.position += -myTransform.forward * moveSpeed * Time.deltaTime;
+            myTransform.localPosition += -Vector3.forward * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.D))
         {
             //rigidbody.AddForce(force, 0f, 0f, ForceMode.Force);
-            myTransform.position += myTransform.right * moveSpeed * Time.deltaTime;
+            myTransform.localPosition += Vector3.right * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.A))
         {
             //rigidbody.AddForce(-force, 0f, 0f, ForceMode.Force);
-            myTransform.position += -myTransform.right * moveSpeed * Time.deltaTime;
+            myTransform.localPosition += -Vector3.right * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.Q))
         {

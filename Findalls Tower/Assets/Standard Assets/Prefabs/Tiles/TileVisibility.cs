@@ -18,15 +18,11 @@ public class TileVisibility : MonoBehaviour
 	
 	void Start () 
 	{
+		Debug.Log ("START");
 		visibilitySources = new HashSet<GameObject> ();
 		visibleLayer = LayerMask.NameToLayer ("Visible");
 		hiddenLayer = LayerMask.NameToLayer ("Hidden");
 		renderer.material = HiddenMat;
-	}
-	
-	void Update () 
-	{
-	
 	}
 	
 	public void OnVisibilityChanged ()
