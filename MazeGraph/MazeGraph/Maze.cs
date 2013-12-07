@@ -66,6 +66,12 @@ namespace MazeGraph
 			pathGraph = MazeGraph.SubGraph (mazeGraph[entryPoint], (vertex => vertex.Content.GetType () == typeof(WallTile)));
 		}
 
+		public Tile RandomAdjacentPath (Tile tile, Random rng)
+		{
+			Vertex vertex = pathGraph [tile.Position];
+			return vertex.RandomEdge (rng).OtherVertex (vertex).Content;
+		}
+
 		public bool AreTilesWithinRange (Tile t1, Tile t2, int range)
 		{
 			List<Edge> path = pathGraph.DFS (pathGraph [t1.Position], new HashSet<Vertex> (), pathGraph [t2.Position], range);

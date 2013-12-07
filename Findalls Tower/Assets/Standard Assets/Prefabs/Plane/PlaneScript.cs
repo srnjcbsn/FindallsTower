@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MazeGraph;
 using System.Linq;
+using System;
 
 public class PlaneScript : MonoBehaviour 
 {
@@ -66,15 +67,15 @@ public class PlaneScript : MonoBehaviour
 		int offset = 5;
 		float scalefactor = (float)mazeSize / 10f;
 		
-		int mazeX = Mathf.FloorToInt( (planeCoords.x + offset) * scalefactor);
-		int mazeY = Mathf.FloorToInt( (planeCoords.z + offset) * scalefactor);
+		int mazeX = Mathf.Clamp (Mathf.FloorToInt( (planeCoords.x + offset) * scalefactor), 0, mazeSize - 1);
+		int mazeY = Mathf.Clamp (Mathf.FloorToInt( (planeCoords.z + offset) * scalefactor), 0, mazeSize - 1);
 		
 		return new Point(mazeX, mazeY);
 	}
 	
 	public Tile GetTileOfPoint(Point pos)
     {
-        return maze[pos];
+		return maze[pos];
     }
 	
 	public bool AreTilesWithinRange(Tile t1, Tile t2, int range)
@@ -105,8 +106,20 @@ public class PlaneScript : MonoBehaviour
 		
 		tilesRevealedBy.Remove(hider);
 	}
+
+	public IEnumerable<Tile> TilesInPath (Tile fromTile, int range)
+	{
+		HashSet<Vertex> vertices = new HashSet<Vertex> ();
+
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (1, 0), range));
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (0, 1), range));
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (-1, 0), range));
+		vertices.UnionWith (VerticesInPath (fromTile, new Point (0, -1), range));
+
+		return vertices.Select (vert => vert.Content);
+	}
 	
-	private IEnumerable<Tile> TilesInPathWithWalls (Tile fromTile, int range)
+	public IEnumerable<Tile> TilesInPathWithWalls (Tile fromTile, int range)
 	{
 		HashSet<Vertex> vertices = new HashSet<Vertex> ();
 		

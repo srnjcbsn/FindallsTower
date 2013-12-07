@@ -8,13 +8,23 @@ public class TileScript : MonoBehaviour
 {
 	public Tile Model;
 	public PlaneScript PlaneScript { get; set; }
+
 	public delegate void EnemyEnteredEventHandler (object sender, Transform enemyTransform);
-	public event EnemyEnteredEventHandler EnemyEntered;
+	public event EnemyEnteredEventHandler EnemyEnteredEvent;
+
+	public delegate void PlayerEnteredEventHandler (object sender);
+	public event PlayerEnteredEventHandler PlayerEnteredEvent;
 	
 	public void OnEnemyEntered (Transform transform)
 	{
-		if (EnemyEntered != null)
-			EnemyEntered (this, transform);
+		if (EnemyEnteredEvent != null)
+			EnemyEnteredEvent (this, transform);
+	}
+
+	public void OnPlayerEntered ()
+	{
+		if (PlayerEnteredEvent != null)
+			PlayerEnteredEvent (this);
 	}
 	
 	public bool IsTileInWalkingRange (Tile other, int range)
@@ -32,6 +42,7 @@ public class TileScript : MonoBehaviour
 			int range = PlaneScript.gameObject.GetComponent<PlayerStats> ().visionRange;
 			PlaneScript.HideTilesRevealedBy (collidingTransform.gameObject);
 			PlaneScript.RevealTilesInStraightPath (collidingTransform.gameObject, Model, range);
+			OnPlayerEntered ();
         }
 		
 		if (collidingTransform.name == "Enemy")

@@ -81,29 +81,6 @@ namespace MazeGraph
 			vertices [position] = vertex;
 		}
 
-//		public Graph SubGraph (Predicate<Vertex> ignoreVertex)
-//		{
-//			//TODO: Throw exception if more than one subgraph?
-//			return SubGraphs (ignoreVertex).FirstOrDefault ();
-//		}
-//
-//		public IEnumerable<Graph> SubGraphs (Predicate<Vertex> ignoreVertex)
-//		{
-//			HashSet<Vertex> explored = new HashSet<Vertex> (new VertexComparer ());
-//
-//			foreach (Vertex vertex in vertices.Values)
-//			{ 
-//				if (explored.Contains (vertex) || vertex.Content.GetType () == typeof(WallTile))
-//					continue;
-//
-//				Graph subGraph = SubGraph (vertex, ignoreVertex);
-//
-//				explored.UnionWith (subGraph.Vertices);
-//
-//				yield return subGraph;
-//			}
-//		}
-
 		public Graph SubGraph (Vertex fromVertex, Predicate<Vertex> ignoreVertex)
 		{
 			HashSet<Vertex> verts = new HashSet<Vertex> ();

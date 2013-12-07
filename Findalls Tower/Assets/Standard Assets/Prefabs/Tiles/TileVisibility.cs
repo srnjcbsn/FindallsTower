@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class TileVisibility : MonoBehaviour 
 {
-	public delegate void VisibilityChangedEventHandler (object sender);
+	public delegate void VisibilityChangedEventHandler (object sender, Transform tileTransform);
 	public event VisibilityChangedEventHandler VisibilityChangedEvent;
 	
 	public Material HiddenMat;
@@ -27,7 +27,7 @@ public class TileVisibility : MonoBehaviour
 	public void OnVisibilityChanged ()
 	{
 		if (VisibilityChangedEvent != null)
-			VisibilityChangedEvent (this);
+			VisibilityChangedEvent (this, transform);
 	}
 	
 	public void Reveal (GameObject revealer)
