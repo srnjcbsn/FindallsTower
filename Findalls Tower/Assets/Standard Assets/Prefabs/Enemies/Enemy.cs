@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour
 		}
 		
 		//When colliding with player damage eachother.
-		if (col.gameObject.name == "Player")
+		if (col.gameObject.tag == "Player")
 		{
 			Debug.Log ("Enemy collides with player");
 			int playerAttack = PlayerStats.FightEnemy (attack);

@@ -10,7 +10,7 @@ public class Game : MonoBehaviour
     private static int dLevel = 1;
     private static int pLevel = 1;
 
-    private int xpPerLevel = 2;
+    private int xpPerLevel = 20;
 
 
     private static string xpScore = "";
