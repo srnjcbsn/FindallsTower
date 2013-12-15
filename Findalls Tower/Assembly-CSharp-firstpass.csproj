@@ -62,6 +62,7 @@
      <Compile Include="Assets\Standard Assets\Prefabs\Player\PlayerStats.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Scoring &amp; Stats\Game.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Scoring &amp; Stats\StatsUI.cs" />
+     <Compile Include="Assets\Standard Assets\Prefabs\Tiles\ExitTile.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Tiles\TileScript.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Tiles\TileVisibility.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Traps\TrapTrigger.cs" />

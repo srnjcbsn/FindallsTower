@@ -59,7 +59,10 @@ public class Game : MonoBehaviour
         points += dLevel;
     }
 
-    
+    public static void NewLevel()
+    {
+        dLevel++;
+    }
 
     void OnGUI()
     {

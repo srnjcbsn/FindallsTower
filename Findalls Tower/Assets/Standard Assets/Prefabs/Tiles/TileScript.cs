@@ -6,6 +6,8 @@ using System;
 
 public class TileScript : MonoBehaviour 
 {
+    private Vector3 playerPos = new Vector3();
+
 	public Tile Model;
 	public PlaneScript PlaneScript { get; set; }
 
@@ -25,6 +27,19 @@ public class TileScript : MonoBehaviour
 	{
 		if (PlayerEnteredEvent != null)
 			PlayerEnteredEvent (this);
+
+        if (UnityEngine.Random.Range(1, 701) <= Game.DungeonLevel)
+        {
+            //Point pos = new Point((int)this.gameObject.transform.localPosition.x, (int)this.gameObject.transform.localPosition.z);
+            Vector3 pos = playerPos;
+            pos.y += 1;
+
+            float yOffset = PlaneScript.Unit / 4f;
+            Vector3 unitScale = new Vector3(PlaneScript.Unit / 2f, PlaneScript.Unit / 2f, PlaneScript.Unit / 2f);
+
+            PlaneScript.GenerateEntity(PlaneScript.TrapPrefab, pos, unitScale);
+        }
+        
 	}
 	
 	public bool IsTileInWalkingRange (Tile other, int range)
@@ -39,6 +54,7 @@ public class TileScript : MonoBehaviour
 		
         if (collidingTransform.tag == "Player")
         {
+            playerPos = collidingTransform.localPosition;
 			int range = PlaneScript.gameObject.GetComponent<PlayerStats> ().visionRange;
 			PlaneScript.HideTilesRevealedBy (collidingTransform.gameObject);
 			PlaneScript.RevealTilesInStraightPath (collidingTransform.gameObject, Model, range);

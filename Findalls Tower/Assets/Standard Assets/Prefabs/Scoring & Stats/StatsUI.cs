@@ -24,6 +24,7 @@ public class StatsUI : MonoBehaviour
     string weapon = "No weapon";
     string pickup = "Nothing";
     string debuff = "Nothing";
+    string lastPickedUp = "";
 
 	// Use this for initialization
 	void Start () 
@@ -43,6 +44,7 @@ public class StatsUI : MonoBehaviour
         weapon = PlayerStats.Weapon;
         pickup = PlayerStats.Pickup;
         debuff = PlayerStats.Debuff;
+        lastPickedUp = PlayerStats.LastPickedUp;
        
 
         if (currentHealth <= 0)
@@ -68,7 +70,9 @@ public class StatsUI : MonoBehaviour
         stats += "Wielding: " + weapon + "\n\n";
         stats += "Affected by: " + pickup + "\n\n";
         stats += "Afflicted by: " + debuff + "\n\n";
+        stats += "\n\nLast picked up:\n" + lastPickedUp + "\n\n";
     }
+       
 
     void OnGUI()
     { 

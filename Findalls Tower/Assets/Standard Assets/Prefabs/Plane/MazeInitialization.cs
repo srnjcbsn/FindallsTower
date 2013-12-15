@@ -11,7 +11,12 @@ public class MazeInitialization
 	public Transform playerPrefab;
 	public Transform entryPrefab;
 	public Transform exitPrefab;
+    public Transform itemPrefab;
+    public Transform trapPrefab;
+    public Transform trapTriggerPrefab;
 	public int baseNumberOfEnemies = 10;
+    public int baseNumberOfItems = 10;
+    public int baseNumberOfTraps = 3;
 	
 	public int mazeSize;
 	public int additionalPaths;
@@ -28,6 +33,9 @@ public class MazeInitialization
 		, Transform playerPrefab
 		, Transform entryPrefab
 		, Transform exitPrefab
+        , Transform itemPrefab
+        , Transform trapPrefab
+        , Transform trapTriggerPrefab
 		, int mazeSize 
 		, int additionalPaths
 		)
@@ -40,6 +48,9 @@ public class MazeInitialization
 		this.exitPrefab = exitPrefab;
 		this.mazeSize = mazeSize;
 		this.additionalPaths = additionalPaths;
+        this.itemPrefab = itemPrefab;
+        this.trapPrefab = trapPrefab;
+        this.trapTriggerPrefab = trapTriggerPrefab;
 	}
 	
 	public Maze ConstructMaze ()
@@ -55,7 +66,7 @@ public class MazeInitialization
 			
 			if (tile.GetType() == typeof(WallTile))
 			{
-				tileTransform = GenerateEntity (wallPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3 (scale, scale * 2f, scale));
+                tileTransform = planeScript.GenerateEntity(wallPrefab, planeScript.MazeToPlaneCoords(pos), new Vector3(scale, scale * 2f, scale));
 			}
 			else if (tile is Tile)
 			{
@@ -73,8 +84,8 @@ public class MazeInitialization
 					exitPosition = tile.Position;
 					prefab = exitPrefab;
 				}
-				
-				tileTransform = GenerateEntity (prefab, planeScript.MazeToPlaneCoords(pos, -1f * scale /2f), new Vector3(scale, scale, scale));
+
+                tileTransform = planeScript.GenerateEntity(prefab, planeScript.MazeToPlaneCoords(pos, -1f * scale / 2f), new Vector3(scale, scale, scale));
 				
 				TileScript tscript = tileTransform.GetComponent<TileScript> ();
 				Debug.Log(tscript);
@@ -88,27 +99,19 @@ public class MazeInitialization
 		
 		Transform tileTransform2;
 		// generate outer walls
-        tileTransform2 = GenerateEntity(wallPrefab, new Vector3(0, scale / 2, -5 - (scale / 2)), new Vector3(10, scale, scale));   // South wall
+        tileTransform2 = planeScript.GenerateEntity(wallPrefab, new Vector3(0, scale / 2, -5 - (scale / 2)), new Vector3(10, scale, scale));   // South wall
         tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
-        tileTransform2 = GenerateEntity(wallPrefab, new Vector3(0, scale / 2, 5 + (scale / 2)), new Vector3(10, scale, scale));    // North wall
+        tileTransform2 = planeScript.GenerateEntity(wallPrefab, new Vector3(0, scale / 2, 5 + (scale / 2)), new Vector3(10, scale, scale));    // North wall
         tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
-        tileTransform2 = GenerateEntity(wallPrefab, new Vector3(5 + (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));   // East Wall
+        tileTransform2 = planeScript.GenerateEntity(wallPrefab, new Vector3(5 + (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));   // East Wall
         tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
-        tileTransform2 = GenerateEntity(wallPrefab, new Vector3(-5 - (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));  // West Wall
+        tileTransform2 = planeScript.GenerateEntity(wallPrefab, new Vector3(-5 - (scale / 2), scale / 2, 0), new Vector3(scale, scale, 10 + (scale * 2)));  // West Wall
         tileTransform2.gameObject.layer = LayerMask.NameToLayer("Visible");
 		
 		return maze;
 	}
 	
-	private Transform GenerateEntity (Transform prefab, Vector3 position, Vector3 scaleVector)
-	{
-		Transform entity = (Transform) MonoBehaviour.Instantiate (prefab);
-		entity.parent = planeScript.transform;
-		entity.localPosition = position;
-		entity.localScale = scaleVector;
-		
-		return entity;
-	}
+	
 	
 	public void PopulateMaze ()
 	{
@@ -120,7 +123,7 @@ public class MazeInitialization
 		usedTiles.Add (entryPosition);
 		
 		Vector3 playerSpawnPosition = planeScript.MazeToPlaneCoords (entryPosition, yOffset);
-		GenerateEntity (playerPrefab, playerSpawnPosition, unitScale);
+        planeScript.GenerateEntity(playerPrefab, playerSpawnPosition, unitScale);
 		
 		int numberOfEnemies = rng.Next (baseNumberOfEnemies, baseNumberOfEnemies + Game.DungeonLevel);
 		
@@ -131,10 +134,43 @@ public class MazeInitialization
 				continue;
 			
 			usedTiles.Add (randomPos);
-			GenerateEntity (planeScript.EnemyPrefab, planeScript.MazeToPlaneCoords (randomPos, yOffset), unitScale);
+            planeScript.GenerateEntity(planeScript.EnemyPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
 			
 			numberOfEnemies--;
 		}
+
+
+        int numberOfItems = rng.Next(baseNumberOfItems, baseNumberOfItems + Game.DungeonLevel);
+
+        while (numberOfItems > 0)
+        {
+            Point randomPos = planeScript.Maze.RandomPointInPath();
+            if (usedTiles.Contains(randomPos))
+                continue;
+
+            usedTiles.Add(randomPos);
+            planeScript.GenerateEntity(planeScript.ItemPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
+
+            numberOfItems--;
+        }
+
+
+        //int numberOfTraps = rng.Next(baseNumberOfTraps, baseNumberOfTraps + Game.DungeonLevel);
+
+        //while (numberOfTraps > 0)
+        //{
+        //    Point randomPos = planeScript.Maze.RandomPointInPath();
+        //    if (usedTiles.Contains(randomPos))
+        //        continue;
+
+        //    usedTiles.Add(randomPos);
+        //    Transform trigger = planeScript.GenerateEntity(planeScript.TrapTriggerPrefab, planeScript.MazeToPlaneCoords(randomPos, 0.0001f), unitScale);
+
+        //    Transform trap = planeScript.GenerateEntity(planeScript.TrapPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
+
+
+        //    numberOfTraps--;
+        //}
 	}
 	
 	

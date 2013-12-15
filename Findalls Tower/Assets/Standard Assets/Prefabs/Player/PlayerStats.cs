@@ -19,6 +19,9 @@ public class PlayerStats : MonoBehaviour {
 	
 	public int visionRange;
 
+    private static string lastPickedUp = "";
+    public static string LastPickedUp { get { return lastPickedUp;} }
+
     private static Item armor;
     public static string Armor
     {
@@ -90,6 +93,9 @@ public class PlayerStats : MonoBehaviour {
         //1: affectsMaxHealth
         //2: affectsDefense
         //3: affectsAttack
+
+        lastPickedUp = item.description;
+
 
         switch (item.type)
         {
@@ -193,7 +199,8 @@ public class PlayerStats : MonoBehaviour {
     //Applies damage from an enemy and returns the players current attack to damage the enemy
     public static int FightEnemy(int enemyAttack)
     {
-        currentHealth -= (enemyAttack - defense);
+        if (enemyAttack - defense > 0)
+            currentHealth -= (enemyAttack - defense);
 
         if (currentHealth < 0)
             Dead();

@@ -5,7 +5,7 @@ public class TrapTrigger : MonoBehaviour
 {
     public int trapNr = 0;
     private string name = "StoneTrap";
-    GameObject trap;
+    public GameObject trap;
 	// Use this for initialization
 	void Start () 
     {
@@ -28,7 +28,7 @@ public class TrapTrigger : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         //Player can set off the trap, activating it and deactivating the trigger
-        if (col.gameObject.name == "Player")
+        if (col.gameObject.tag == "Player")
         {
             trap.SetActive(trap);
             gameObject.SetActive(false);

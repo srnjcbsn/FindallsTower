@@ -61,7 +61,7 @@ public class ItemPickup : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         Debug.Log("Colission");
-        if (col.gameObject.name == "Player")
+        if (col.gameObject.tag == "Player")
         {
             Game.ItemPickup();
             PlayerStats.ItemPickup(item);

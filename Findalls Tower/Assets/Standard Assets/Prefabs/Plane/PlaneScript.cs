@@ -12,11 +12,15 @@ public class PlaneScript : MonoBehaviour
 	public Transform EnemyPrefab;
 	public Transform EntryPrefab;
 	public Transform ExitPrefab;
+    public Transform ItemPrefab;
+    public Transform TrapPrefab;
+    public Transform TrapTriggerPrefab;
 	public int mazeSize;
 	public int additionalPaths;
 	
 	private Maze maze;
 	internal float unit;
+    public float Unit { get { return unit;} }
 	private Dictionary<GameObject, HashSet<Tile>> tilesRevealedBy;
 	public Dictionary<Tile, Transform> tileDict;
 	
@@ -30,20 +34,55 @@ public class PlaneScript : MonoBehaviour
 		unit = 10f / mazeSize;
 		tileDict = new Dictionary<Tile, Transform> ();
 		tilesRevealedBy = new Dictionary<GameObject, HashSet<Tile>> ();
-		MazeInitialization mazeInitializer = new MazeInitialization 
-			(
-				this, 
-				WallPrefab, 
-				PathPrefab,
-				PlayerPrefab,
-				EntryPrefab,
-				ExitPrefab,
-				mazeSize, 
-				additionalPaths
-			);
-		maze = mazeInitializer.ConstructMaze ();
-		mazeInitializer.PopulateMaze ();
+
+        CreateLevel();
 	}
+
+    void Update()
+    {
+        if (ExitTile.Exit)
+            NewLevel();
+    }
+
+    private void DestroyLevel()
+    {
+        List<GameObject> children = new List<GameObject>();
+        foreach (Transform child in this.transform)
+        {
+            children.Add(child.gameObject);
+        }
+        children.ForEach(child => Destroy(child));
+        maze = null;
+    }
+
+    private void CreateLevel()
+    {
+        MazeInitialization mazeInitializer = new MazeInitialization
+            (
+                this,
+                WallPrefab,
+                PathPrefab,
+                PlayerPrefab,
+                EntryPrefab,
+                ExitPrefab,
+                ItemPrefab,
+                TrapPrefab,
+                TrapTriggerPrefab,
+                mazeSize,
+                additionalPaths
+            );
+
+        maze = mazeInitializer.ConstructMaze();
+        mazeInitializer.PopulateMaze();
+
+    }
+
+    public void NewLevel()
+    {
+        Game.NewLevel();
+        DestroyLevel();
+        CreateLevel();
+    }
 	
 	public Vector3 MazeToPlaneCoords (Point mazeCoords, float yOffset)
 	{
@@ -161,4 +200,14 @@ public class PlaneScript : MonoBehaviour
 		return (pos.X == fromPos.X && Mathf.Abs(Mathf.Abs(fromPos.Y) - Mathf.Abs(pos.Y)) < range)
 				|| (pos.Y == fromPos.Y && Mathf.Abs(Mathf.Abs(fromPos.X) - Mathf.Abs(pos.X)) < range);
 	}
+
+    public Transform GenerateEntity(Transform prefab, Vector3 position, Vector3 scaleVector)
+    {
+        Transform entity = (Transform)MonoBehaviour.Instantiate(prefab);
+        entity.parent = this.transform;
+        entity.localPosition = position;
+        entity.localScale = scaleVector;
+
+        return entity;
+    }
 }
