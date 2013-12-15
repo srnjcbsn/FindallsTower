@@ -17,6 +17,9 @@ public class PlaneScript : MonoBehaviour
     public Transform TrapTriggerPrefab;
 	public int mazeSize;
 	public int additionalPaths;
+
+    private static bool destroy = false;
+    public static bool DestroySelf { get { return destroy; } }
 	
 	private Maze maze;
 	internal float unit;
@@ -53,10 +56,12 @@ public class PlaneScript : MonoBehaviour
         }
         children.ForEach(child => Destroy(child));
         maze = null;
+        destroy = true;
     }
 
     private void CreateLevel()
     {
+        destroy = false;
         MazeInitialization mazeInitializer = new MazeInitialization
             (
                 this,
@@ -74,7 +79,7 @@ public class PlaneScript : MonoBehaviour
 
         maze = mazeInitializer.ConstructMaze();
         mazeInitializer.PopulateMaze();
-
+        
     }
 
     public void NewLevel()

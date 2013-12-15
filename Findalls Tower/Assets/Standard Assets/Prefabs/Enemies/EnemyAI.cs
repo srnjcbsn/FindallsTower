@@ -4,6 +4,8 @@ using MazeGraph;
 
 public class EnemyAI : MonoBehaviour
 {
+    private bool destroy = false;
+
 	public float MoveSpeed;
 
 	public bool WanderPackage = true;
@@ -27,11 +29,14 @@ public class EnemyAI : MonoBehaviour
 	void Awake ()
 	{
 		myTransform = transform; //cache transform data for easy access/preformance
-		player = GameObject.FindWithTag ("Player").transform;
+        FindPlayer();
 	}
+
+    
 
 	void Start ()
 	{
+        
 		targetPosition = transform.localPosition;
 		planeScript = GameObject.Find ("Plane").GetComponent<PlaneScript> ();
 		enemyScript = GetComponent<Enemy> ();
@@ -40,6 +45,8 @@ public class EnemyAI : MonoBehaviour
 
 	void Update ()
 	{
+        if (PlaneScript.DestroySelf)
+            Destroy(this);
 		rigidbody.velocity = Vector3.zero;
 
 		if (IsFollowingPlayer)
@@ -81,4 +88,11 @@ public class EnemyAI : MonoBehaviour
 	{
 		IsFollowingPlayer = true;
 	}
+
+    public void FindPlayer()
+    {
+        player = GameObject.FindWithTag("Player").transform;
+    }
+
+    
 }

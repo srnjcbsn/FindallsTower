@@ -124,7 +124,8 @@ public class MazeInitialization
 		usedTiles.Add (entryPosition);
 		
 		Vector3 playerSpawnPosition = planeScript.MazeToPlaneCoords (entryPosition, yOffset);
-        planeScript.GenerateEntity(playerPrefab, playerSpawnPosition, unitScale);
+        Transform p = planeScript.GenerateEntity(playerPrefab, playerSpawnPosition, unitScale);
+        //p.tag = "Player";
 		
 		int numberOfEnemies = rng.Next (baseNumberOfEnemies, baseNumberOfEnemies + Game.DungeonLevel);
 		

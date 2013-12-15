@@ -69,8 +69,8 @@ public class Enemy : MonoBehaviour
 
 			foreach (Tile tile in planeScript.TilesInPath (col.transform.GetComponent<TileScript> ().Model, VisionRange))
 			{
-				if (planeScript.PlaneToMazeCoords (AIScript.Player.localPosition) == tile.Position)
-					AIScript.PlayerSpotted (null);
+                if (planeScript.PlaneToMazeCoords(AIScript.Player.localPosition) == tile.Position)
+                    AIScript.PlayerSpotted(null);
 				planeScript.tileDict [tile].GetComponent<TileScript> ().PlayerEnteredEvent += AIScript.PlayerSpotted;
 				tilesInVision.Add (tile);
 			}
@@ -119,4 +119,6 @@ public class Enemy : MonoBehaviour
 	{
 		gameObject.SetActive (false);
 	}
+
+    
 }
