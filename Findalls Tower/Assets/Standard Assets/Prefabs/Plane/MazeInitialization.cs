@@ -81,6 +81,7 @@ public class MazeInitialization
 			
 				if (tile.GetType() == typeof(ExitTile))
 				{
+                    Debug.Log("Exit position");
 					exitPosition = tile.Position;
 					prefab = exitPrefab;
 				}

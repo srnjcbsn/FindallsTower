@@ -40,7 +40,7 @@ public class PlaneScript : MonoBehaviour
 
     void Update()
     {
-        if (ExitTile.Exit)
+        if (ExitTileTrigger.exit)
             NewLevel();
     }
 
@@ -79,6 +79,7 @@ public class PlaneScript : MonoBehaviour
 
     public void NewLevel()
     {
+        ExitTileTrigger.exit = false;
         Game.NewLevel();
         DestroyLevel();
         CreateLevel();

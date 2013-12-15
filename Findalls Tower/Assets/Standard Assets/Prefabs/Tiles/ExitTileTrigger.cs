@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ExitTile : MonoBehaviour 
+public class ExitTileTrigger : MonoBehaviour 
 {
-    private static bool exit = false;
-    public static bool Exit { get { return exit; } }
+    public static bool exit = false;
 
     void OnCollisionEnter(Collision collision)
     {
