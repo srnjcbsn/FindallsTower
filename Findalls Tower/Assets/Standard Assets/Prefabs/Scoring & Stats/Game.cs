@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
 	private static int points = 0;
 	private static int dLevel = 1;
 	private static int pLevel = 1;
-	private int xpPerLevel = 20;
+	private int xpPerLevel = 2500;
 	private static string xpScore = "";
 
 	public static int DungeonLevel { get { return dLevel; } }
@@ -42,14 +42,20 @@ public class Game : MonoBehaviour
 
 	public static void EnemyKilled ()
 	{
-		experience += dLevel + 1;
-		points += dLevel + 1;        
+		experience += (dLevel + 1) * 100;
+		points += (dLevel + 1) * 100;        
 	}
 
 	public static void ItemPickup ()
 	{
-		experience += dLevel;
-		points += dLevel;
+		experience += dLevel * 100;
+		points += dLevel * 100;
+	}
+
+	public static void TileUncovered ()
+	{
+		experience += (dLevel / 2) + 1;
+		points += (dLevel / 2) + 1;
 	}
 
 	public static void NewLevel ()

@@ -11,6 +11,7 @@ public class TileVisibility : MonoBehaviour
 	
 	private bool isVisible;
 	public bool IsVisible { get { return isVisible; } }
+	public bool IsDiscovered { get; private set; }
 	
 	private HashSet<GameObject> visibilitySources;
 	private int visibleLayer; 
@@ -18,6 +19,7 @@ public class TileVisibility : MonoBehaviour
 	
 	void Awake () 
 	{
+		IsDiscovered = false;
 		visibilitySources = new HashSet<GameObject> ();
 		visibleLayer = LayerMask.NameToLayer ("Visible");
 		hiddenLayer = LayerMask.NameToLayer ("Hidden");
@@ -32,6 +34,7 @@ public class TileVisibility : MonoBehaviour
 	
 	public void Reveal (GameObject revealer)
 	{
+		IsDiscovered = true;
 		gameObject.layer = visibleLayer;
 		renderer.material = VisibleMat;
 		

@@ -86,6 +86,7 @@ public class PlayerStats : MonoBehaviour {
 		currentHealth = maxHealth;
 		defense = 0;        
 		attack = 1;
+		lastPickedUp = "";
 	}
 
     //Handles the different items the player can pick up

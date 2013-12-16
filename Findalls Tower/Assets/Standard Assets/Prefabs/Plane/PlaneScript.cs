@@ -142,10 +142,14 @@ public class PlaneScript : MonoBehaviour
 		
 		foreach (Tile tile in TilesInPathWithWalls (fromTile, range))
 		{
+			// if tile is made visible for the first time
+			if (!((TileVisibility)tileDict[tile].GetComponent<TileVisibility>()).IsDiscovered)
+				Game.TileUncovered ();
+
 			tileDict[tile].GetComponent<TileVisibility> ().Reveal (revealer);
 			revealed.Add (tile);
 		}
-		
+
 		tilesRevealedBy.Add (revealer, revealed);
 	}
 	
