@@ -74,14 +74,12 @@ public class MazeInitialization
 				
 				if (tile.GetType() == typeof(EntryTile))
 				{
-					Debug.Log ("Entry position");
 					entryPosition = tile.Position;
 					prefab = entryPrefab;
 				}
 			
 				if (tile.GetType() == typeof(ExitTile))
 				{
-                    Debug.Log("Exit position");
 					exitPosition = tile.Position;
 					prefab = exitPrefab;
 				}
@@ -89,7 +87,6 @@ public class MazeInitialization
                 tileTransform = planeScript.GenerateEntity(prefab, planeScript.MazeToPlaneCoords(pos, -1f * scale / 2f), new Vector3(scale, scale, scale));
 				
 				TileScript tscript = tileTransform.GetComponent<TileScript> ();
-				Debug.Log(tscript);
 				tscript.Model = tile;
 				tscript.PlaneScript = planeScript;
 			}

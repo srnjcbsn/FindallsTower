@@ -45,7 +45,6 @@ public class TileVisibility : MonoBehaviour
 	
 	public void Hide (GameObject hider)
 	{
-		Debug.Log ("HIDE");
 		visibilitySources.Remove (hider);
 		
 		if (visibilitySources.Count == 0)

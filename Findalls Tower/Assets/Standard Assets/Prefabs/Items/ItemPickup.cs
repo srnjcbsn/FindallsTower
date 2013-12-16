@@ -51,16 +51,8 @@ public class ItemPickup : MonoBehaviour
         }
     }
 
-	
-	// Update is called once per frame
-	void Update () 
-    {
-	
-	}
-
     void OnCollisionEnter(Collision col)
     {
-        Debug.Log("Colission");
         if (col.gameObject.tag == "Player")
         {
             Game.ItemPickup();

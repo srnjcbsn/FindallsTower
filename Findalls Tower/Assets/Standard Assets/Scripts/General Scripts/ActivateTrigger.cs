@@ -39,8 +39,8 @@ public class ActivateTrigger : MonoBehaviour {
 						DestroyObject (targetGameObject);
 					}
 					break;
-				case Mode.Activate:
-					targetGameObject.active = true;
+			case Mode.Activate:
+				targetGameObject.active = false;
 					break;
 				case Mode.Enable:
 					if (targetBehaviour != null)

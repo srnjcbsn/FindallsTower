@@ -68,8 +68,6 @@ public class Enemy : MonoBehaviour
 
 			tilesInVision = new HashSet<Tile> ();
 
-			Debug.Log (col.transform.GetComponent<TileScript> ().Model);
-
 			foreach (Tile tile in planeScript.TilesInPath (col.transform.GetComponent<TileScript> ().Model, VisionRange))
 			{
 				if (planeScript.PlaneToMazeCoords (AIScript.Player.localPosition) == tile.Position)
@@ -81,14 +79,12 @@ public class Enemy : MonoBehaviour
 
 		if (col.gameObject.CompareTag ("Enemy"))
 		{
-			Debug.Log ("enemies collided");
 			AIScript.Wander ();
 		}
 		
 		//When colliding with player damage eachother.
 		if (col.gameObject.tag == "Player")
 		{
-			Debug.Log ("Enemy collides with player");
 			int playerAttack = PlayerStats.FightEnemy (attack);
 			//Check to see if the enemy dies
 			if (FightPlayer (playerAttack))
