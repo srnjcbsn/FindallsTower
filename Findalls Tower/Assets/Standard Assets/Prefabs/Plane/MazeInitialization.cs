@@ -112,8 +112,6 @@ public class MazeInitialization
 		return maze;
 	}
 	
-	
-	
 	public void PopulateMaze ()
 	{
 		System.Random rng = new System.Random ();
@@ -151,29 +149,9 @@ public class MazeInitialization
                 continue;
 
             usedTiles.Add(randomPos);
-            planeScript.GenerateEntity(planeScript.ItemPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
-
+			Transform item = planeScript.GenerateEntity(planeScript.ItemPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
+			planeScript.tileDict [planeScript.GetTileOfPoint (randomPos)].GetComponent<TileVisibility> ().VisibilityChangedEvent += item.GetComponent<ItemMat> ().TileVisibilityChanged;
             numberOfItems--;
         }
-
-
-        //int numberOfTraps = rng.Next(baseNumberOfTraps, baseNumberOfTraps + Game.DungeonLevel);
-
-        //while (numberOfTraps > 0)
-        //{
-        //    Point randomPos = planeScript.Maze.RandomPointInPath();
-        //    if (usedTiles.Contains(randomPos))
-        //        continue;
-
-        //    usedTiles.Add(randomPos);
-        //    Transform trigger = planeScript.GenerateEntity(planeScript.TrapTriggerPrefab, planeScript.MazeToPlaneCoords(randomPos, 0.0001f), unitScale);
-
-        //    Transform trap = planeScript.GenerateEntity(planeScript.TrapPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
-
-
-        //    numberOfTraps--;
-        //}
 	}
-	
-	
 }

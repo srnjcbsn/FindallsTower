@@ -15,7 +15,7 @@ public class PlayerStats : MonoBehaviour {
     private static int attack;
     public static int Attack { get { return attack; } set { attack = value; } }
 	
-	public int visionRange;
+	public int VisionRange;
 
     private static string lastPickedUp = "";
     public static string LastPickedUp { get { return lastPickedUp;} }

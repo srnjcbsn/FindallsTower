@@ -98,8 +98,8 @@ public class Enemy : MonoBehaviour
 
 	private void MakeTransparent ()
 	{
-//		Color thisColor = renderer.material.color;
-//		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 0f);
+		Color thisColor = renderer.material.color;
+		renderer.material.color = new Color (thisColor.r, thisColor.g, thisColor.b, 0f);
 	}
 
 	private void MakeOpaque ()

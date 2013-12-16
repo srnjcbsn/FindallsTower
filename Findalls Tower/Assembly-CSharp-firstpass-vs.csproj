@@ -52,6 +52,7 @@
      <Compile Include="Assets\Standard Assets\Prefabs\Items\Item definitions\ItemType.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Items\ItemMat.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Items\ItemPickup.cs" />
+     <Compile Include="Assets\Standard Assets\Prefabs\Items\ItemVisibility.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Plane\MazeConstruction.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Plane\MazeInitialization.cs" />
      <Compile Include="Assets\Standard Assets\Prefabs\Plane\MazePopulation.cs" />

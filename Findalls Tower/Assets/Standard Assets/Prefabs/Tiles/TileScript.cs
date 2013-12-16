@@ -55,7 +55,8 @@ public class TileScript : MonoBehaviour
         if (collidingTransform.tag == "Player")
         {
             playerPos = collidingTransform.localPosition;
-			int range = PlaneScript.gameObject.GetComponent<PlayerStats> ().visionRange;
+			int range = PlaneScript.gameObject.GetComponent<PlayerStats> ().VisionRange;
+			Debug.Log ("vision range: " + range);
 			PlaneScript.HideTilesRevealedBy (collidingTransform.gameObject);
 			PlaneScript.RevealTilesInStraightPath (collidingTransform.gameObject, Model, range);
 			OnPlayerEntered ();
