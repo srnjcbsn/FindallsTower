@@ -11,7 +11,6 @@ public class Enemy : MonoBehaviour
 	private PlaneScript planeScript;
 	private EnemyAI AIScript;
 	private Transform currentTile;
-
 	public HashSet<Tile> tilesInVision;
 
 	public Transform CurrentTile { get { return currentTile; } }
@@ -28,9 +27,13 @@ public class Enemy : MonoBehaviour
 		level = Game.DungeonLevel;
 		offset = level;
 
-		health = Random.Range (level, level + offset + 1);
-		defense = 0;
-		attack = 1;
+		health = Random.Range (level, 2 * level + 1);
+		defense = Random.Range (level - 2, 2 * level - 2);
+
+		attack = Random.Range (level, 2 * level);
+
+		if (defense < 0)
+			defense = 0;
 	}
 
 	void Start ()
@@ -65,12 +68,12 @@ public class Enemy : MonoBehaviour
 
 			tilesInVision = new HashSet<Tile> ();
 
-			Debug.Log (col.transform.GetComponent<TileScript>().Model);
+			Debug.Log (col.transform.GetComponent<TileScript> ().Model);
 
 			foreach (Tile tile in planeScript.TilesInPath (col.transform.GetComponent<TileScript> ().Model, VisionRange))
 			{
-                if (planeScript.PlaneToMazeCoords(AIScript.Player.localPosition) == tile.Position)
-                    AIScript.PlayerSpotted(null);
+				if (planeScript.PlaneToMazeCoords (AIScript.Player.localPosition) == tile.Position)
+					AIScript.PlayerSpotted (null);
 				planeScript.tileDict [tile].GetComponent<TileScript> ().PlayerEnteredEvent += AIScript.PlayerSpotted;
 				tilesInVision.Add (tile);
 			}
@@ -119,6 +122,4 @@ public class Enemy : MonoBehaviour
 	{
 		gameObject.SetActive (false);
 	}
-
-    
 }
