@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using System.Collections;
 
 public class ItemMat : MonoBehaviour
@@ -16,6 +16,7 @@ public class ItemMat : MonoBehaviour
 		planeRenderer = GetComponentInChildren<MeshRenderer> ();
 		planeRenderer.material = mats [iter];
 		timeOld = System.DateTime.Now.TimeOfDay.TotalMilliseconds;
+		ApplyAlphaChannel ();
 	}
 	// Update is called once per frame
 	void Update ()
