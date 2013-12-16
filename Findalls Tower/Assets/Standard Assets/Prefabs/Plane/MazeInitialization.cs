@@ -124,8 +124,7 @@ public class MazeInitialization
 		usedTiles.Add (entryPosition);
 		
 		Vector3 playerSpawnPosition = planeScript.MazeToPlaneCoords (entryPosition, yOffset);
-        Transform p = planeScript.GenerateEntity(playerPrefab, playerSpawnPosition, unitScale);
-        //p.tag = "Player";
+		Transform player = planeScript.GenerateEntity(playerPrefab, playerSpawnPosition, unitScale);
 		
 		int numberOfEnemies = rng.Next (baseNumberOfEnemies, baseNumberOfEnemies + Game.DungeonLevel);
 		
@@ -136,8 +135,9 @@ public class MazeInitialization
 				continue;
 			
 			usedTiles.Add (randomPos);
-            planeScript.GenerateEntity(planeScript.EnemyPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
-			
+			Transform enemy = planeScript.GenerateEntity(planeScript.EnemyPrefab, planeScript.MazeToPlaneCoords(randomPos, yOffset), unitScale);
+			enemy.GetComponent<EnemyAI> ().Player = player;
+
 			numberOfEnemies--;
 		}
 

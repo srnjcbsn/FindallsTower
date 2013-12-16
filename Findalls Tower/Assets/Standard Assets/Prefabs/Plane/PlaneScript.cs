@@ -82,6 +82,14 @@ public class PlaneScript : MonoBehaviour
         
     }
 
+	public void Restart ()
+	{
+		Game.Restart ();
+		DestroyLevel ();
+		CreateLevel ();
+		PlayerStats.InitializePlayer ();
+	}
+
     public void NewLevel()
     {
         ExitTileTrigger.exit = false;

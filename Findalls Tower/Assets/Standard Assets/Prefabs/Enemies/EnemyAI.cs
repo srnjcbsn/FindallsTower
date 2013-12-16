@@ -19,8 +19,7 @@ public class EnemyAI : MonoBehaviour
 	private Vector3 targetPosition;
 	private System.Random rng;
 
-	private Transform player;
-	public Transform Player { get { return player; } }
+	public Transform Player { get; set; }
 	private Enemy enemyScript;
 
 	private Vector3 lastKnownPlayerLocation;
@@ -29,10 +28,8 @@ public class EnemyAI : MonoBehaviour
 	void Awake ()
 	{
 		myTransform = transform; //cache transform data for easy access/preformance
-        FindPlayer();
+//        FindPlayer();
 	}
-
-    
 
 	void Start ()
 	{
@@ -45,6 +42,8 @@ public class EnemyAI : MonoBehaviour
 
 	void Update ()
 	{
+//		FindPlayer ();
+
         if (PlaneScript.DestroySelf)
             Destroy(this);
 		rigidbody.velocity = Vector3.zero;
@@ -76,8 +75,8 @@ public class EnemyAI : MonoBehaviour
 
 	void Follow ()
 	{
-		if (enemyScript.tilesInVision.Contains (planeScript.GetTileOfPoint (planeScript.PlaneToMazeCoords (player.localPosition))))
-			lastKnownPlayerLocation = player.localPosition;
+		if (enemyScript.tilesInVision.Contains (planeScript.GetTileOfPoint (planeScript.PlaneToMazeCoords (Player.localPosition))))
+			lastKnownPlayerLocation = Player.localPosition;
 		else
 			IsFollowingPlayer = false;
 
@@ -91,7 +90,7 @@ public class EnemyAI : MonoBehaviour
 
     public void FindPlayer()
     {
-        player = GameObject.FindWithTag("Player").transform;
+		Player = GameObject.FindWithTag("Player").transform;
     }
 
     

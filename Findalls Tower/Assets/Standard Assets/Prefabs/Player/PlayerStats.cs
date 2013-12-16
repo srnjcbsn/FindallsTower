@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
-
 public class PlayerStats : MonoBehaviour {
 
     private static int maxHealth;
@@ -74,16 +72,20 @@ public class PlayerStats : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        maxHealth = 4;
-        currentHealth = maxHealth;
-        defense = 0;        
-        attack = 1;
+		InitializePlayer ();
     }
-	
-	// Update is called once per frame
-	void Update () 
-    {
-	    
+
+	public static void InitializePlayer ()
+	{
+		armor = null;
+		debuff = null;
+		weapon = null;
+		pickup = null;
+
+		maxHealth = 4;
+		currentHealth = maxHealth;
+		defense = 0;        
+		attack = 1;
 	}
 
     //Handles the different items the player can pick up
@@ -148,52 +150,7 @@ public class PlayerStats : MonoBehaviour {
                 break;
             default:
                 break;
-
         }  
-
-
-
-        ////Heals player - one time effect
-        //if (item.GetType() == typeof(HealthGlobe))
-        //{
-        //    CurrentHealth += item.StatsAffected[0];
-        //    if (currentHealth > maxHealth)
-        //        currentHealth = maxHealth;
-            
-        //    Debug.Log("Player health: " + CurrentHealth);
-        //    return;
-        //}
-        ////Buffs/debuffs player - effect is equipped and stays on
-        //else if (item.GetType() == typeof(Buff))
-        //{
-        //    if (pickup != null)
-        //    {
-        //        UnEquip(pickup);
-        //        pickup = null;
-        //    }
-        //    pickup = item;
-        //    Equip(item);
-        //}
-        //else if (item.GetType() == typeof(Armor))
-        //{
-        //    if (armor != null)
-        //    {
-        //        UnEquip(armor);
-        //        armor = null;
-        //    }
-        //    armor = item;
-        //    Equip(item);
-        //}
-        //else if (item.GetType() == typeof(Weapon))
-        //{
-        //    if (weapon != null)
-        //    {
-        //        UnEquip(weapon);
-        //        weapon = null;
-        //    }
-        //    weapon = item;
-        //    Equip(item);
-        //}
     }
 
     //Applies damage from an enemy and returns the players current attack to damage the enemy
@@ -202,7 +159,7 @@ public class PlayerStats : MonoBehaviour {
         if (enemyAttack - defense > 0)
             currentHealth -= (enemyAttack - defense);
 
-        if (currentHealth < 0)
+		if (currentHealth <= 0)
             Dead();
 
         return attack;
@@ -291,7 +248,6 @@ public class PlayerStats : MonoBehaviour {
 
     private static void Dead()
     {
-        Debug.Log("DEAD!!!");
+		GameObject.FindWithTag ("Plane").GetComponent<PlaneScript> ().Restart ();
     }
-
 }
